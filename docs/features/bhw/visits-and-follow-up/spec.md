@@ -1,6 +1,16 @@
 # BHW Visits and Follow-up
 
-**Status:** Planned. The standalone HTML prototype demonstrates in-memory visit entry and follow-up buttons. The Laravel app has no persistent MediTrack visit, schedule, or follow-up domain tables yet.
+**Status:** Partial — Laravel models, migrations, API routes, and React screens now cover households, residents, appointments, visit records, and follow-ups. Migrations and runtime behavior have not been verified by the owner.
+
+## Implemented in code
+
+- BHWs can search residents in their assigned barangay; health-center staff can view the pilot barangay's records.
+- Staff can create schedules and visits with optional blood pressure/temperature, mark appointments completed or missed, and add/close follow-up items with an action note. A missed appointment creates an open follow-up item.
+- Visits marked unable to contact reject measurements. Follow-up appointment dates entered with a visit create a scheduled appointment. Activity logs record these changes.
+
+## Remaining work
+
+- Automatic clinical flags, repeated-miss rules, prenatal/vaccination reminders, visit correction history, and UI pagination/filter controls remain future work. Measurement values are stored as entered and do not drive clinical decisions.
 
 ## Proposed workflow
 
@@ -29,5 +39,5 @@
 
 - The visit outcome/status vocabulary and who can close a follow-up.
 - Which measurements are in scope for the first release and what units/validation rules to use.
-- Whether BHW assignments are per purok, household, or another health-center-defined boundary.
+- Whether BHW assignments should cover one or multiple barangays.
 - Which dashboard counts are useful and what denominator/time period they use.

@@ -1,6 +1,15 @@
 # Resident Symptom Reporting
 
-**Status:** Planned. The HTML prototype has a free-text request box, but no guided symptom flow or backend persistence exists in the Laravel/React app.
+**Status:** Partial — the React flow asks category-specific questions and saves reports through the Laravel API. Questions and next-step wording are draft content and require health-staff approval before use with real patients. Migrations and runtime behavior have not been verified by the owner.
+
+## Implemented in code
+
+- Residents choose a concern category, answer fixed follow-up questions, and may add onset date, self-described severity, and details. The API validates question keys and allowed choices, stores the questionnaire version, and returns a generic contact-the-health-team message.
+- Residents can see their own report status; authorized BHW/health-center staff can review a report and save a note. The app does not infer a disease or prescribe treatment.
+
+## Remaining work
+
+- Have qualified health staff approve the questions, language, next-step text, and urgent escalation process. Add a pre-submit review/correction screen and resident notice/consent workflow. Do not treat the current generic next step as medical triage.
 
 ## Goal and boundary
 

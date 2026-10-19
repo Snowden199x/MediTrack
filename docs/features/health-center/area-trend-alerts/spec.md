@@ -1,6 +1,16 @@
 # Area Symptom Trend Alerts
 
-**Status:** Planned. No symptom-report storage, area aggregation, trend calculation, or alert review workflow exists in the current app.
+**Status:** Partial — staff-only aggregation, configurable rules, and signal review exist in code. Automatic signal creation is disabled by default and requires health-team approval, server configuration, and an enabled rule. Migrations and runtime behavior have not been verified by the owner.
+
+## Implemented in code
+
+- A health-center-only endpoint groups reports by barangay and symptom category over seven days, counts distinct reporting residents, and hides groups below five residents.
+- A health-center user can save a rule with a 1–30 day window and a minimum of at least five distinct residents. When server processing is enabled, a matching report can create a staff-only signal for review. Review outcomes and notes are recorded.
+- Signals are labeled as patterns for review. No disease, virus, outbreak diagnosis, or public warning is generated.
+
+## Remaining work
+
+- The current rule uses an absolute count, not a historical baseline or statistical unusual-increase calculation. Health staff must choose thresholds and response roles. Evaluate false signals, duplicate/biased reporting, privacy in small areas, and escalation procedures with synthetic data first.
 
 ## Goal and boundary
 
@@ -27,7 +37,7 @@ Help authorized barangay health staff notice an unusual increase in similar symp
 ## Decisions needed
 
 - Which symptom categories count as similar for trend purposes.
-- Area granularity (for example, purok or barangay) and time windows.
+- Area granularity and time windows.
 - Baseline method and threshold ownership.
 - Minimum group size, retention, alert recipients, and escalation procedure.
 - How to handle duplicate reports, residents reporting for family, and areas with low reporting volume.

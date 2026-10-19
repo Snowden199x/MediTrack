@@ -22,8 +22,23 @@ services:
 
   frontend:
     build: ./frontend
+    environment:
+      VITE_API_PROXY_TARGET: http://backend:8000
     ports:
       - "5173:5173"
+    volumes:
+      - ./frontend:/app:z
+    depends_on:
+      - backend
+
+  admin:
+    build: ./frontend
+    environment:
+      VITE_APP_MODE: admin
+      VITE_API_PROXY_TARGET: http://backend:8000
+      VITE_CACHE_DIR: /tmp/meditrack-admin-vite-cache
+    ports:
+      - "127.0.0.1:5174:5173"
     volumes:
       - ./frontend:/app:z
     depends_on:
