@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'psgc' => [
+        'base_url' => env('PSGC_API_BASE_URL', 'https://psgc.cloud/api/v2'),
+    ],
+
 ];

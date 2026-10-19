@@ -1,6 +1,8 @@
 # Public Landing Page
 
-**Status:** Planned. The current React app is a starter shell and does not yet contain a product landing page.
+**Status:** Implemented in code — the React app has a responsive public MediTrack landing page with sign-in and resident registration entry points. Browser/device review remains with the project owner.
+
+The page uses MediTrack as the working name. The pitch uses Barangay HealthLink, so the final brand still needs confirmation before publication.
 
 ## Purpose
 

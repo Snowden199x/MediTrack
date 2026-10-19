@@ -2,7 +2,7 @@
 
 This note records the project idea in the external Ideas folder, the technology choices shared by the project owner, and what is already present in the MediTrack repository. The pitch documents call the concept Barangay HealthLink; the current code repository is named MediTrack. Confirm the final product name before presenting or publishing the project.
 
-See the [documentation index](README.md) for feature specs and the [security overview](security.md). Feature specs are planned unless explicitly marked otherwise.
+See the [documentation index](README.md) for feature status and the [security overview](security.md). Implemented code has not yet been verified through migrations or runtime use by the project owner.
 
 ## Current project
 
@@ -21,9 +21,9 @@ The pitch describes paper-based or scattered records and residents who may only 
 
 The pitch aligns the project primarily with UN Sustainable Development Goal 3: Good Health and Well-Being, through preventive care, community monitoring, and improved access to local health services.
 
-## Proposed capabilities
+## Product capabilities and ideas
 
-The pitch and HTML prototype describe these possible functions. They are product ideas and demo behavior; they are not implemented as persistent application features in the Laravel/React repository yet.
+The pitch and HTML prototype describe these functions. The first implementation now covers basic accounts, resident/household records, scheduling, visits, follow-ups, requests, announcements, guided reports, and private area counts. The more specialized rules below remain proposals.
 
 - Resident and household registration, reminders, announcements, and requests for an appointment or assistance.
 - BHW resident records, home visit notes, basic measurement entry, and scheduling.
@@ -32,9 +32,9 @@ The pitch and HTML prototype describe these possible functions. They are product
 - Guided symptom reporting: ask follow-up questions to clarify what the resident is experiencing, then suggest an appropriate next step such as contacting a BHW or visiting the health center. Initial scope is symptom clarification and next-step guidance, not naming a disease or diagnosing.
 - Area-level trend signal: aggregate similar symptom reports by area and time period, and flag an unusual increase for authorized barangay health staff to verify. The system must describe this as a signal for review, not announce that a virus or outbreak is confirmed.
 
-## Feature roadmap for later implementation
+## Original feature roadmap and remaining work
 
-Everything in this roadmap is proposed work. The order is a suggested build sequence, not a promise or a final requirements approval. The current repository has only the starter API/authentication and frontend shell described in the repository snapshot below.
+This roadmap records the original scope and desired acceptance behavior. Some items now exist in code; refer to each feature spec for its current status. Clinical logic, identity verification, and operational processes still need product-owner and health-team decisions.
 
 ### Phase 0 — Public landing page
 
@@ -47,8 +47,10 @@ Everything in this roadmap is proposed work. The order is a suggested build sequ
 
 ### Phase 1 — Accounts and resident records
 
-- Add distinct account roles for residents, BHWs, and health-center staff. Define which staff role can view, create, update, and export each type of record before building the screens.
-- Let authorized staff register a household and its residents, including barangay area/purok and basic contact details needed for follow-up.
+- Add distinct account roles for residents, BHWs, health-center staff, and a superuser registration reviewer. The code holds resident signups as pending until review. The superuser registration-review client is a separate local-only service on port `5174`; the public web client on `5173` does not include its sign-in page or link. Runtime verification is pending.
+- The superuser can review resident registrations and create BHW accounts, but cannot use health-record workflows. BHW creation requires a name, email, assigned barangay, and initial password; the admin shares that password privately. A first account is configured in private `.env`; run the bootstrap command after migrations to create or update it in the database.
+- Define which staff role can view, create, update, and export each type of record before building the screens.
+- Let authorized staff register a household and its residents, including barangay address and basic contact details needed for follow-up.
 - Let residents see only their own record and submit updates or requests. Do not let a resident choose another resident as the prototype currently permits.
 - Add server-side validation and authorization for all record operations. Keep a record of who created or changed health records and when.
 
@@ -77,7 +79,7 @@ Everything in this roadmap is proposed work. The order is a suggested build sequ
 
 ### Phase 5 — Area-level symptom trend signals
 
-- Group submitted reports into staff-approved symptom categories and aggregate them by a defined time window and barangay area/purok.
+- Group submitted reports into staff-approved symptom categories and aggregate them by a defined time window and barangay.
 - Compare current counts with a baseline or another rule approved for the pilot. Decide the minimum report count, time windows, and review thresholds with health staff; do not hard-code a guessed outbreak threshold.
 - Show only aggregated trend information to authorized staff. Avoid exposing names or individual report details on an area map or community dashboard.
 - Label an alert as an unusual increase that needs staff verification. Record who reviewed it, what action was taken, and whether it was dismissed, monitored, or escalated through the barangay's approved process.
@@ -92,10 +94,10 @@ Everything in this roadmap is proposed work. The order is a suggested build sequ
 - SMS reminders or notifications, if the project has a suitable provider and a clear opt-in/operational process.
 - A React Native mobile client, if a web app is not sufficient for residents or BHWs.
 
-### Requirements to settle before implementation
+### Requirements to settle before a real pilot
 
 - Confirm the final product name: the pitch and prototype use “Barangay HealthLink,” while the repository currently uses “MediTrack.”
-- Confirm account creation and approval rules for residents, BHWs, and health-center staff.
+- Verify the superuser's registration-review and BHW account-creation workflows in the app, including initial credential delivery and area assignment.
 - Confirm required resident and household fields, which data is optional, and how records are corrected or removed.
 - Have health staff approve symptom categories, follow-up questions, urgent escalation language, and staff response workflow.
 - Agree with health staff on area aggregation, alert review thresholds, recipients, and the steps after a signal appears.
@@ -119,7 +121,7 @@ Before carrying its behavior into the application, account for these limitations
 - Requests and announcements have no status history, dates, scheduling workflow, or persistence. The demo's announcements are fixed sample text.
 - The interface is English-only and uses a sample web layout. Confirm language, accessibility, and mobile-device needs with intended barangay users before finalizing the real interface.
 
-Suggested first implementation slice: establish authenticated roles and authorized resident/household records; then persist visit records and schedules; then build a BHW follow-up queue with traceable follow-up actions. Add resident requests and announcements with explicit status and response content. Keep all screening rules configurable/reviewed and outside diagnostic language.
+The first code slice now includes authenticated roles, resident/household records, schedules, visits, follow-ups, requests, and announcements. Screening rules still need health-staff review and must stay outside diagnostic language.
 
 For the symptom and area-signal ideas, have health staff review the question flow, urgent escalation wording, symptom categories, alert threshold, and staff response process before using real reports. Health information is sensitive; define access, aggregation, retention, and approved use before collecting it.
 
@@ -136,7 +138,7 @@ The proposed rollout is a small pilot with sample or volunteer households, impro
 | Backend | Laravel 13, PHP 8.3+, API routes in `backend/routes/api.php` |
 | Web frontend | React 19, Vite, Tailwind CSS 4 |
 | Database | MariaDB 11 in Docker Compose; MySQL-compatible |
-| Authentication | Laravel Sanctum is installed; current API has register/login/logout and current-user routes |
+| Authentication | Laravel Sanctum bearer tokens with resident/BHW/health-center roles and scoped API routes; owner runtime verification pending |
 | State management | Not selected or installed yet. Zustand or Redux Toolkit are React options; Pinia is for Vue and does not fit the current React frontend. |
 | Realtime | Laravel Reverb or Pusher are future options; neither is configured in the current project. |
 | Mobile | React Native is a possible future client; no mobile app is present in this repository. |
@@ -181,16 +183,16 @@ Check current provider plans before choosing a service because free tiers and el
 
 Observed in the repository:
 
-- Laravel API skeleton with Sanctum, `AuthController`, and API routes for registration, login, logout, `/me`, and protected `/user`.
-- React app currently renders a centered `MediTrack` heading; starter assets and styles remain.
+- Laravel API includes Sanctum authentication, role and active-account middleware, resident and staff workflows, and eleven new health-domain migrations.
+- React includes a public landing page and role-specific resident and staff workspaces.
 - Docker Compose defines `backend`, `frontend`, and `db` services. The database image is `mariadb:11`, database name `meditrack`, and the host port is `3307` mapped to container port `3306`.
 - The backend Dockerfile installs PDO MySQL support.
-- The initial migration set contains Laravel users/cache/jobs tables and a Sanctum personal access token table. No MediTrack-specific health-center domain tables were found in this snapshot.
-- No React Native app, websocket configuration, or application-specific health-center workflow was found in this snapshot.
+- The new tables cover households, residents, appointments, visits, follow-ups, requests, announcements, symptom reports, area rules/signals, and activity logs. They have not been migrated in this implementation pass.
+- React Native, websocket broadcasting, and production deployment configuration remain future work.
 
 ## Configuration item to reconcile
 
-The root `.env.example` currently sets `DB_CONNECTION=sqlite`, while Docker Compose provides MariaDB and the backend image supports PDO MySQL. For container use, configure the backend environment for MariaDB (`DB_CONNECTION=mysql`, host `db`, port `3306`, and the Compose database credentials). Decide whether to change the example env defaults as part of local setup documentation; do not mistake the SQLite example setting for the database choice.
+The backend `.env.example` now targets MariaDB at host `db` and port `3306`, matching Docker Compose. Supply the development database password through the private `backend/.env`; never commit it. The example leaves `DB_PASSWORD` blank intentionally. Automatic area alerts are off unless `MEDITRACK_AREA_ALERTS_ENABLED=true` is explicitly configured after review.
 
 ## Ideas folder note
 
