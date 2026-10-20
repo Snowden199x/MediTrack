@@ -136,13 +136,13 @@ The proposed rollout is a small pilot with sample or volunteer households, impro
 | Area | Current choice / direction |
 | --- | --- |
 | Backend | Laravel 13, PHP 8.3+, API routes in `backend/routes/api.php` |
-| Web frontend | React 19, Vite, Tailwind CSS 4 |
-| Database | MariaDB 11 in Docker Compose; MySQL-compatible |
+| Web frontend | React 19, TypeScript, Vite, Tailwind CSS 4; React Router, TanStack Query, Zustand, React Hook Form, and Zod are configured for the web client |
+| Database | PostgreSQL 17 in Docker Compose |
 | Authentication | Laravel Sanctum bearer tokens with resident/BHW/health-center roles and scoped API routes; owner runtime verification pending |
-| State management | Not selected or installed yet. Zustand or Redux Toolkit are React options; Pinia is for Vue and does not fit the current React frontend. |
+| State management | Zustand for shared client state and TanStack Query for server state |
 | Realtime | Laravel Reverb or Pusher are future options; neither is configured in the current project. |
 | Mobile | React Native is a possible future client; no mobile app is present in this repository. |
-| Containers | Dockerfiles for backend/frontend and root Docker Compose file for backend, frontend, and MariaDB |
+| Containers | Dockerfiles for backend/frontend and root Docker Compose file for backend, frontend, admin, and PostgreSQL |
 
 ## Developer tools and environment
 
@@ -185,14 +185,14 @@ Observed in the repository:
 
 - Laravel API includes Sanctum authentication, role and active-account middleware, resident and staff workflows, and eleven new health-domain migrations.
 - React includes a public landing page and role-specific resident and staff workspaces.
-- Docker Compose defines `backend`, `frontend`, and `db` services. The database image is `mariadb:11`, database name `meditrack`, and the host port is `3307` mapped to container port `3306`.
-- The backend Dockerfile installs PDO MySQL support.
+- Docker Compose defines `backend`, `frontend`, `admin`, and `postgres` services. PostgreSQL uses database `meditrack`, a persistent `postgres_data` volume, and host port `5433` mapped to container port `5432`. Frontend dependencies are installed in the image and persisted in a named `frontend_node_modules` volume.
+- PostgreSQL is the only configured application database and Docker Compose service. The backend image installs PDO PostgreSQL support; MySQL and MariaDB connections are removed from Laravel's database configuration.
 - The new tables cover households, residents, appointments, visits, follow-ups, requests, announcements, symptom reports, area rules/signals, and activity logs. They have not been migrated in this implementation pass.
 - React Native, websocket broadcasting, and production deployment configuration remain future work.
 
 ## Configuration item to reconcile
 
-The backend `.env.example` now targets MariaDB at host `db` and port `3306`, matching Docker Compose. Supply the development database password through the private `backend/.env`; never commit it. The example leaves `DB_PASSWORD` blank intentionally. Automatic area alerts are off unless `MEDITRACK_AREA_ALERTS_ENABLED=true` is explicitly configured after review.
+The backend `.env.example` targets PostgreSQL at host `postgres` and port `5432`. The Compose container uses the local development password `meditrack_local` by default; if `POSTGRES_PASSWORD` is set in the root Compose `.env`, set the same value as `DB_PASSWORD` in the private `backend/.env`. This default is only for local development and must not be used outside a local environment. `docker compose down` preserves the PostgreSQL database volume. Existing MariaDB records were not copied to PostgreSQL. Automatic area alerts are off unless `MEDITRACK_AREA_ALERTS_ENABLED=true` is explicitly configured after review.
 
 ## Ideas folder note
 

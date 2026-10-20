@@ -18,7 +18,7 @@
 - Authentication and report submission have rate limits. Passwords use Laravel's hashed cast and are hidden from serialized users.
 - Activity records identify the actor, action, and record for key changes without copying raw report text into the log. The list of activity events is not yet a complete access audit.
 - Area counts are health-center-only, count distinct residents, and hide groups below five. Automatic signal creation is off by default. Signals do not declare a disease or outbreak.
-- The backend `.env.example` leaves the database password blank. Docker Compose still contains fixed development database credentials; replace them before any nonlocal use. The React client keeps the bearer token in session storage.
+- The backend `.env.example` uses a local-only PostgreSQL development password that must not be reused outside local development. PostgreSQL is the only configured application database and Compose database service. The React client keeps the bearer token in session storage.
 
 ## Work required before real health data
 
