@@ -75,6 +75,10 @@ p { line-height: 1.55; }
 .form-page { max-width: 700px; }
 .form-stack { display: grid; gap: 15px; }
 .form-stack label { display: grid; gap: 6px; font-size: .9rem; font-weight: 600; }
+.password-control { position: relative; display: flex; align-items: center; }
+.password-control input { padding-right: 62px !important; }
+.password-toggle { position: absolute; right: 10px; padding: 4px; border: 0; background: transparent; color: var(--brand); font-size: .85rem; font-weight: 700; }
+.field-hint { color: var(--muted); font-size: .82rem; font-weight: 400; line-height: 1.4; }
 .form-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .form-row.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 input:not([type=checkbox]), select, textarea { width: 100%; min-height: 40px; padding: 8px 10px; border: 1px solid #adbfbb; border-radius: 7px; background: var(--surface); color: var(--ink); font-weight: 400; }
