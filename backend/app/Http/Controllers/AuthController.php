@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -25,7 +26,7 @@ class AuthController extends Controller
             'age' => ['required', 'integer', 'between:0,120'],
             'sex' => ['required', Rule::in(['female', 'male', 'other', 'undisclosed'])],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', Password::min(8)->mixedCase()->numbers()->symbols(), 'confirmed'],
             'address' => ['nullable', 'string', 'max:255'],
             'region_code' => ['required', 'string', 'regex:/\A[0-9]{10}\z/'],
             'region_name' => ['required', 'string', 'max:120'],
