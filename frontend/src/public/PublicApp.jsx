@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { api, getToken, setToken } from './api'
-import ResidentWorkspace from './ResidentWorkspace'
-import StaffWorkspace from './StaffWorkspace'
-import PsgcAddressFields from './PsgcAddressFields'
-import './App.css'
+import { api, getToken, setToken } from '../shared/api'
+import ResidentWorkspace from '../resident/ResidentWorkspace'
+import StaffWorkspace from '../staff/StaffWorkspace'
+import PsgcAddressFields from '../shared/PsgcAddressFields'
+import './public.css'
 
 function Landing({ go }) {
   return <main>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { api } from './api'
-import PsgcAddressFields from './PsgcAddressFields'
+import { api } from '../shared/api'
+import PsgcAddressFields from '../shared/PsgcAddressFields'
+import './admin.css'
 
 const date = value => value ? new Date(value).toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' }) : '—'
 const emptyBhwForm = { name: '', email: '', address: '', region_code: '', region_name: '', province_code: '', province_name: '', city_municipality_code: '', city_municipality_name: '', barangay_code: '', barangay_name: '', password: '', password_confirmation: '' }

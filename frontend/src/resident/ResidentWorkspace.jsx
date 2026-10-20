@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { api } from './api'
-import PsgcAddressFields from './PsgcAddressFields'
+import { api } from '../shared/api'
+import PsgcAddressFields from '../shared/PsgcAddressFields'
+import './resident.css'
 
 function date(value) { return value ? new Date(value).toLocaleDateString('en-PH', { dateStyle: 'medium' }) : '—' }
 

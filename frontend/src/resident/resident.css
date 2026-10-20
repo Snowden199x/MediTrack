@@ -1,0 +1,7 @@
+.resident-layout { grid-template-columns: 275px minmax(0, 1fr); }
+.next-step { margin-top: 20px; padding: 18px; background: var(--soft); border-radius: 8px; }
+.next-step p { margin-bottom: 0; }
+
+@media (max-width: 760px) {
+  .resident-layout { grid-template-columns: 1fr; }
+}

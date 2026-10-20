@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { api } from './api'
-import PsgcAddressFields from './PsgcAddressFields'
+import { api } from '../shared/api'
+import PsgcAddressFields from '../shared/PsgcAddressFields'
+import './staff.css'
 
 const date = value => value ? new Date(value).toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' }) : '—'
 const list = value => value?.data || []

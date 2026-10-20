@@ -1,0 +1,21 @@
+.landing-intro { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr); gap: 48px; align-items: start; padding-top: 76px; padding-bottom: 76px; }
+.landing-intro > div > p { max-width: 570px; color: var(--muted); font-size: 1.12rem; }
+.landing-summary { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 24px; }
+.landing-summary ol { list-style: none; margin: 0; padding: 0; }
+.landing-summary li { display: grid; gap: 3px; padding: 15px 0; border-bottom: 1px solid var(--border); }
+.landing-summary li:last-child { border: 0; padding-bottom: 0; }
+.landing-summary span { color: var(--muted); }
+.landing-section { padding-top: 36px; padding-bottom: 48px; border-top: 1px solid var(--border); }
+.feature-columns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.feature-columns article { padding-top: 16px; border-top: 2px solid var(--brand); }
+.feature-columns p { color: var(--muted); }
+.safety-copy { margin-top: 32px; padding: 15px 18px; background: var(--soft); border-radius: 8px; }
+.password-control { position: relative; display: flex; align-items: center; }
+.password-control input { padding-right: 62px !important; }
+.password-toggle { position: absolute; right: 10px; padding: 4px; border: 0; background: transparent; color: var(--brand); font-size: .85rem; font-weight: 700; }
+.field-hint { color: var(--muted); font-size: .82rem; font-weight: 400; line-height: 1.4; }
+
+@media (max-width: 760px) {
+  .landing-intro { grid-template-columns: 1fr; gap: 28px; padding-top: 48px; padding-bottom: 48px; }
+  .feature-columns { grid-template-columns: 1fr; }
+}

@@ -1,11 +1,12 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
+import './styles/base.css'
+import './shared/shared.css'
 
 const root = createRoot(document.getElementById('root'))
 const appModule = import.meta.env.VITE_APP_MODE === 'admin'
-  ? import('./AdminApp.jsx')
-  : import('./App.jsx')
+  ? import('./admin/AdminApp.jsx')
+  : import('./public/PublicApp.jsx')
 
 appModule.then(({ default: App }) => {
   root.render(<StrictMode><App /></StrictMode>)
