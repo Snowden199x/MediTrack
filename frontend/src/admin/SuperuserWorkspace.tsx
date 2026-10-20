@@ -28,7 +28,7 @@ export default function SuperuserWorkspace({ user }) {
 
   async function refreshAccounts(query = accountQuery) {
     const params = new URLSearchParams()
-    Object.entries(query).forEach(([key, value]) => { if (value) params.set(key, value) })
+    Object.entries(query).forEach(([key, value]) => { if (value) params.set(key, String(value)) })
     const result = await api(`/admin/accounts?${params.toString()}`)
     setAccounts(result.accounts.data || [])
     setAccountPage(result.accounts)
@@ -86,7 +86,7 @@ export default function SuperuserWorkspace({ user }) {
     async function loadAccounts() {
       try {
         const params = new URLSearchParams()
-        Object.entries(accountQuery).forEach(([key, value]) => { if (value) params.set(key, value) })
+        Object.entries(accountQuery).forEach(([key, value]) => { if (value) params.set(key, String(value)) })
         const result = await api(`/admin/accounts?${params.toString()}`)
         if (isMounted) {
           setAccounts(result.accounts.data || [])
@@ -238,7 +238,7 @@ export default function SuperuserWorkspace({ user }) {
       </form>
       {accounts.length ? <div className="table-wrap"><table><thead><tr><th>Account</th><th>Role</th><th>Status</th><th>Barangay</th><th>Created</th><th>Actions</th></tr></thead><tbody>{accounts.map(account => <tr key={account.id}><td><strong>{account.name}</strong><br />{account.email}</td><td>{account.role === 'bhw' ? 'BHW' : 'Resident'}</td><td>{account.status}</td><td>{account.barangay_name || '—'}</td><td>{date(account.created_at)}</td><td><div className="account-actions"><button className="button secondary small" disabled={account.status === 'archived'} onClick={() => { setEditingAccount(account); setAccountDraft({ name: account.name, email: account.email }) }}>Edit</button>{account.status === 'archived' ? <><button className="button small" disabled={busyId === account.id} onClick={() => changeAccountState(account, 'restore')}>Restore</button><button className="button danger small" disabled={busyId === account.id} onClick={() => changeAccountState(account, 'delete')}>Delete</button></> : account.status !== 'pending' && <button className="button secondary small" disabled={busyId === account.id} onClick={() => changeAccountState(account, 'archive')}>Archive</button>}</div></td></tr>)}</tbody></table></div> : <p className="empty">No accounts match these filters.</p>}
       <div className="account-pagination"><span>{accountPage.total || 0} accounts · Page {accountPage.current_page || 1} of {accountPage.last_page || 1}</span><div><button className="button secondary small" disabled={(accountPage.current_page || 1) <= 1} onClick={() => setAccountQuery({ ...accountQuery, page: accountPage.current_page - 1 })}>Previous</button><button className="button secondary small" disabled={(accountPage.current_page || 1) >= (accountPage.last_page || 1)} onClick={() => setAccountQuery({ ...accountQuery, page: accountPage.current_page + 1 })}>Next</button></div></div>
-      {editingAccount && <div className="account-edit-backdrop" role="presentation" onClick={event => { if (event.target === event.currentTarget) setEditingAccount(null) }}><form className="panel account-edit-dialog form-stack" role="dialog" aria-modal="true" aria-labelledby="edit-account-title" onSubmit={saveAccount}><h2 id="edit-account-title">Edit account</h2><label>Name<input required maxLength="255" value={accountDraft.name} onChange={event => setAccountDraft({ ...accountDraft, name: event.target.value })} /></label><label>Email<input required type="email" maxLength="255" value={accountDraft.email} onChange={event => setAccountDraft({ ...accountDraft, email: event.target.value })} /></label><div className="account-actions"><button type="button" className="button secondary" onClick={() => setEditingAccount(null)}>Cancel</button><button className="button" disabled={busyId === editingAccount.id}>{busyId === editingAccount.id ? 'Saving…' : 'Save changes'}</button></div></form></div>}
+      {editingAccount && <div className="account-edit-backdrop" role="presentation" onClick={event => { if (event.target === event.currentTarget) setEditingAccount(null) }}><form className="panel account-edit-dialog form-stack" role="dialog" aria-modal="true" aria-labelledby="edit-account-title" onSubmit={saveAccount}><h2 id="edit-account-title">Edit account</h2><label>Name<input required maxLength={255} value={accountDraft.name} onChange={event => setAccountDraft({ ...accountDraft, name: event.target.value })} /></label><label>Email<input required type="email" maxLength={255} value={accountDraft.email} onChange={event => setAccountDraft({ ...accountDraft, email: event.target.value })} /></label><div className="account-actions"><button type="button" className="button secondary" onClick={() => setEditingAccount(null)}>Cancel</button><button className="button" disabled={busyId === editingAccount.id}>{busyId === editingAccount.id ? 'Saving…' : 'Save changes'}</button></div></form></div>}
     </section> : section === 'registrations' ? <section className="panel">
       <h2>Waiting for review</h2>
       {loading ? <p>Loading registrations…</p> : registrations.length ? <ul className="plain-list registration-list">
@@ -250,7 +250,7 @@ export default function SuperuserWorkspace({ user }) {
           <div className="registration-actions">
             <button className="button small" disabled={busyId === registration.id} onClick={() => review(registration, 'approve')}>Approve</button>
             <label>Reason for rejection
-              <input maxLength="1000" value={reasons[registration.id] || ''} onChange={event => setReasons(previous => ({ ...previous, [registration.id]: event.target.value }))} />
+              <input maxLength={1000} value={reasons[registration.id] || ''} onChange={event => setReasons(previous => ({ ...previous, [registration.id]: event.target.value }))} />
             </label>
             <button className="button secondary small" disabled={busyId === registration.id || !reasons[registration.id]?.trim()} onClick={() => review(registration, 'reject')}>Reject</button>
           </div>
@@ -260,13 +260,13 @@ export default function SuperuserWorkspace({ user }) {
       <form className="panel form-stack" onSubmit={createBhwAccount}>
         <h2>Create a BHW account</h2>
         <p>The admin creates the account and assigns one barangay. Share the initial password with them privately.</p>
-        <label>Full name<input required maxLength="255" value={bhwForm.name} onChange={event => setBhwForm({ ...bhwForm, name: event.target.value })} /></label>
-        <label>Email<input required type="email" autoComplete="email" maxLength="255" value={bhwForm.email} onChange={event => setBhwForm({ ...bhwForm, email: event.target.value })} /></label>
-        <label>House number / street <span className="optional">Optional</span><input maxLength="255" autoComplete="street-address" value={bhwForm.address} onChange={event => setBhwForm({ ...bhwForm, address: event.target.value })} /></label>
+        <label>Full name<input required maxLength={255} value={bhwForm.name} onChange={event => setBhwForm({ ...bhwForm, name: event.target.value })} /></label>
+        <label>Email<input required type="email" autoComplete="email" maxLength={255} value={bhwForm.email} onChange={event => setBhwForm({ ...bhwForm, email: event.target.value })} /></label>
+        <label>House number / street <span className="optional">Optional</span><input maxLength={255} autoComplete="street-address" value={bhwForm.address} onChange={event => setBhwForm({ ...bhwForm, address: event.target.value })} /></label>
         <PsgcAddressFields heading="Assigned barangay" value={bhwForm} onChange={location => setBhwForm(previous => ({ ...previous, ...location }))} />
         <div className="form-row">
-          <label>Initial password<input required type="password" autoComplete="new-password" minLength="8" value={bhwForm.password} onChange={event => setBhwForm({ ...bhwForm, password: event.target.value })} /></label>
-          <label>Confirm password<input required type="password" autoComplete="new-password" minLength="8" value={bhwForm.password_confirmation} onChange={event => setBhwForm({ ...bhwForm, password_confirmation: event.target.value })} /></label>
+          <label>Initial password<input required type="password" autoComplete="new-password" minLength={8} value={bhwForm.password} onChange={event => setBhwForm({ ...bhwForm, password: event.target.value })} /></label>
+          <label>Confirm password<input required type="password" autoComplete="new-password" minLength={8} value={bhwForm.password_confirmation} onChange={event => setBhwForm({ ...bhwForm, password_confirmation: event.target.value })} /></label>
         </div>
         <button className="button" disabled={creatingBhw}>{creatingBhw ? 'Creating…' : 'Create BHW account'}</button>
       </form>

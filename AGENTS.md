@@ -7,10 +7,10 @@ MediTrack is an early-stage health-center web project. Keep changes aligned with
 ## Current architecture
 
 - Backend: Laravel 13, PHP 8.3+; API routes are in `backend/routes/api.php`.
-- Web frontend: React 19, Vite, Tailwind CSS 4, JavaScript (not TypeScript yet).
-- Database in the Docker Compose development setup: MariaDB 11, compatible with MySQL. The root `.env.example` still defaults to SQLite; follow the active Compose configuration or the user's explicit environment instructions and call out any mismatch.
+- Web frontend: React 19, TypeScript/TSX, Vite, Tailwind CSS 4; JavaScript checking remains enabled during gradual typing.
+- Database in the Docker Compose development setup: PostgreSQL 17 with a named persistent volume.
 - Authentication: Laravel Sanctum is installed. Existing API includes register, login, logout, `/me`, and protected `/user` routes.
-- Containers: root `docker-compose.yml` defines backend, frontend, and MariaDB services.
+- Containers: root `docker-compose.yml` defines backend, frontend, admin, and PostgreSQL services.
 - React Native/mobile, real-time broadcasting, and a production deployment setup are not present in the current repository. Treat them as future plans unless asked to implement them.
 
 ## Working rules
