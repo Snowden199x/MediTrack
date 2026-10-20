@@ -1,0 +1,23 @@
+.registration-actions { display: flex; flex-wrap: wrap; align-items: end; gap: 10px; margin-top: 14px; }
+.registration-actions label { display: grid; flex: 1 1 260px; gap: 6px; font-size: .9rem; font-weight: 600; }
+.admin-count-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.admin-count-card { display: grid; gap: 14px; min-height: 116px; padding: 20px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+.admin-count-card span { color: var(--muted); font-size: .92rem; }
+.admin-count-card strong { font-size: 2rem; line-height: 1; }
+.admin-overview-list { grid-column: 1 / -1; }
+.account-filter { justify-content: flex-start; margin: 16px 0; }
+.account-filter input { flex: 1 1 240px; }
+.account-filter select { width: auto; min-width: 140px; }
+.account-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.button.danger { border-color: #a32921; background: #a32921; color: #fff; }
+.account-pagination { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; color: var(--muted); font-size: .9rem; }
+.account-pagination > div { display: flex; gap: 8px; }
+.account-edit-backdrop { position: fixed; inset: 0; z-index: 5; display: grid; place-items: center; padding: 20px; background: rgb(10 25 23 / 55%); }
+.account-edit-dialog { width: min(100%, 460px); box-shadow: 0 16px 48px rgb(0 0 0 / 20%); }
+.account-edit-dialog .account-actions { justify-content: flex-end; }
+
+@media (max-width: 760px) {
+  .admin-count-grid { grid-template-columns: 1fr; }
+  .admin-overview-list { grid-column: auto; }
+  .account-pagination { align-items: flex-start; flex-direction: column; }
+}

@@ -1,0 +1,11 @@
+.summary-list { max-width: 600px; }
+.summary-list > div { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--border); }
+.summary-list strong { font-size: 1.1rem; }
+.selectable-list button { display: grid; width: 100%; padding: 2px; text-align: left; border: 0; background: transparent; color: var(--ink); }
+.selectable-list button:hover strong { color: var(--brand); text-decoration: underline; }
+.member-fields { padding-top: 16px; border-top: 1px solid var(--border); }
+.inline-form { margin-top: 12px; max-width: 620px; }
+.answer-list { margin: 8px 0; }
+.answer-list > div { display: flex; gap: 8px; }
+.answer-list dt { font-weight: 600; text-transform: capitalize; }
+.answer-list dd { margin: 0; }

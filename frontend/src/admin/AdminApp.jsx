@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
-import { api, getToken, setToken } from './api'
+import { api, getToken, setToken } from '../shared/api'
 import SuperuserWorkspace from './SuperuserWorkspace'
-import './App.css'
 
 function AdminApp() {
   const [user, setUser] = useState(null)
