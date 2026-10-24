@@ -154,15 +154,30 @@ function App() {
 
   const roleName = user?.role === 'health_center' ? 'Health center' : user?.role === 'bhw' ? 'BHW' : 'Resident'
   const homePath = '/app'
+  // Resident workspace is a full-page shell (like admin); suppress the public header/footer for it.
+  const isResidentShell = Boolean(user && user.role === 'resident')
+
+  if (loading) {
+    return <main className="page-container workspace"><p className="loading" role="status">Loading…</p></main>
+  }
+
+  if (isResidentShell) {
+    return (
+      <Routes>
+        <Route path="/app" element={<ResidentWorkspace user={user} onRefreshUser={refreshUser} onLogout={logout} />} />
+        <Route path="*" element={<Navigate to="/app" replace />} />
+      </Routes>
+    )
+  }
 
   return <><header className="site-header"><div className="site-header-inner"><button className="brand" onClick={() => go(user ? homePath : '/')}><span className="brand-mark" aria-hidden="true" />MediTrack</button><nav aria-label="Main navigation">{user ? <><span className="signed-in">{user.name} · {roleName}</span><button className="text-button" onClick={logout}>Log out</button></> : <><button className="text-button" onClick={() => go('/login')}>Log in</button><button className="button small" onClick={() => go('/register')}>Register</button></>}</nav></div></header>
-    {loading ? <main className="page-container workspace"><p className="loading" role="status">Loading…</p></main> : <Routes>
+    <Routes>
       <Route path="/" element={<Landing go={go} />} />
       <Route path="/login" element={user ? <Landing go={go} /> : <AuthForm mode="login" onAuth={onAuth} go={go} />} />
       <Route path="/register" element={user ? <Landing go={go} /> : <AuthForm mode="register" onAuth={onAuth} go={go} />} />
-      <Route path="/app" element={user && user.role !== 'superuser' ? user.role === 'resident' ? <ResidentWorkspace user={user} onRefreshUser={refreshUser} /> : <StaffWorkspace user={user} /> : <Landing go={go} />} />
+      <Route path="/app" element={user && user.role !== 'superuser' ? <StaffWorkspace user={user} /> : <Landing go={go} />} />
       <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>}
+    </Routes>
     <footer className="site-footer"><div className="page-container">MediTrack · Barangay health follow-up</div></footer>
   </>
 }

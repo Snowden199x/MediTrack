@@ -1,0 +1,188 @@
+/* ── Account management ── */
+.account-filter { justify-content: flex-start; margin-bottom: 16px; }
+.account-filter input { flex: 1 1 240px; }
+.account-filter select { width: auto; min-width: 150px; }
+.account-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.account-pagination { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; color: var(--muted); font-size: .9rem; }
+.account-pagination > div { display: flex; gap: 8px; }
+.account-edit-backdrop { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 20px; background: rgb(16 36 46 / 45%); backdrop-filter: blur(3px); }
+.account-edit-dialog { width: min(100%, 460px); box-shadow: 0 24px 64px rgb(16 36 46 / 25%); }
+.account-edit-dialog .account-actions { justify-content: flex-end; }
+
+/* ── Pending approvals table ── */
+.approvals-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+}
+
+.approvals-table {
+  width: 100%;
+  table-layout: fixed;          /* lets long text cut off instead of stretching the table */
+  border-collapse: collapse;
+}
+
+.approvals-table th {
+  padding: 11px 14px;
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 700;
+  border-bottom: 2px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+/* Every cell stays on one line and ends with "…" when it is too long */
+.approvals-table td {
+  padding: 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  font-size: .9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.approvals-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.approvals-table tbody tr:hover {
+  background: var(--surface-2);
+}
+
+/* Column widths */
+.approvals-table .col-name    { width: 22%; }
+.approvals-table .col-email   { width: 26%; }
+.approvals-table .col-age     { width: 12%; }
+.approvals-table .col-loc     { width: 22%; }
+.approvals-table .col-date    { width: 18%; }
+.approvals-table .col-actions { width: 72px; text-align: center; }
+
+.approvals-table .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ── Icon button (view / close) ── */
+.icon-button {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md, 8px);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.icon-button:hover { background: var(--surface-2); }
+.icon-button:focus-visible { outline: 3px solid currentColor; outline-offset: 2px; }
+
+/* ── Details side panel ── */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  justify-content: flex-end;
+  background: rgb(16 36 46 / 45%);
+  backdrop-filter: blur(3px);
+}
+
+.drawer {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 440px);
+  height: 100%;
+  background: var(--surface, #fff);
+  box-shadow: -24px 0 64px rgb(16 36 46 / 25%);
+  animation: drawer-in .2s ease-out;
+}
+
+@keyframes drawer-in {
+  from { transform: translateX(24px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer { animation: none; }
+}
+
+.drawer-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.drawer-header h2 { margin: 0; font-size: 1.15rem; }
+.drawer-header p  { margin: 2px 0 0; color: var(--muted); font-size: .88rem; }
+
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+}
+
+.detail-list { display: grid; gap: 16px; margin: 0; }
+.detail-list dt {
+  margin-bottom: 2px;
+  color: var(--muted);
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+/* In the panel there is room, so full details wrap instead of being cut off */
+.detail-list dd { margin: 0; font-size: .95rem; overflow-wrap: anywhere; }
+
+.drawer-footer {
+  display: grid;
+  gap: 10px;
+  padding: 16px 24px calc(16px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.drawer-footer label { font-size: .88rem; font-weight: 700; }
+.drawer-footer label span { color: var(--muted); font-weight: 400; }
+.drawer-footer textarea {
+  width: 100%;
+  min-height: 72px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md, 8px);
+  font: inherit;
+  resize: vertical;
+}
+.drawer-footer .account-actions { justify-content: flex-end; }
+
+/* ── Registrations (legacy list style) ── */
+.registration-list li { padding: 20px 0; }
+.registration-actions { display: flex; flex-wrap: wrap; align-items: end; gap: 10px; margin-top: 14px; padding: 16px; background: var(--surface-2); border-radius: var(--radius-md); }
+.registration-actions label { display: grid; flex: 1 1 260px; gap: 7px; font-size: .88rem; font-weight: 700; }
+
+/* ── Responsive ── */
+/* The table drops the less important columns as the screen gets narrower.
+   Everything is still visible in the side panel. */
+@media (max-width: 1100px) {
+  .approvals-table .col-loc { display: none; }
+}
+@media (max-width: 860px) {
+  .approvals-table .col-date { display: none; }
+}
+@media (max-width: 640px) {
+  .approvals-table .col-age { display: none; }
+  .approvals-table th,
+  .approvals-table td { padding: 12px 10px; }
+  .approvals-table .col-actions { width: 60px; }
+  .drawer { width: 100%; }
+}
+@media (max-width: 760px) {
+  .account-pagination { align-items: flex-start; flex-direction: column; }
+}

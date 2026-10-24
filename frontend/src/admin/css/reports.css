@@ -1,0 +1,110 @@
+/* ── Reports filter bar ── */
+.reports-filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.reports-filter-btn {
+  padding: 7px 18px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: .88rem;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+}
+
+.reports-filter-btn:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.reports-filter-btn.active {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+
+/* ── Reports table ── */
+.reports-table-wrap {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+
+.reports-table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+}
+
+.reports-table th {
+  padding: 12px 18px;
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 700;
+  border-bottom: 1.5px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.reports-table td {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  font-size: .9rem;
+}
+
+.reports-table tbody tr:last-child td { border-bottom: 0; }
+.reports-table tbody tr:hover { background: var(--surface-2); }
+
+.reports-resident-name { font-weight: 700; display: block; margin-bottom: 2px; }
+.reports-purok { font-size: .82rem; color: var(--muted); }
+.reports-symptoms-main { display: block; font-weight: 600; margin-bottom: 3px; }
+.reports-symptoms-detail { display: block; font-size: .82rem; color: var(--muted); line-height: 1.5; }
+
+/* ── Urgency badges ── */
+.urgency-badge {
+  display: inline-flex;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.urgency-high, .urgency-medium { background: #fde8e8; color: #b91c1c; }
+.urgency-mild   { background: #d1fae5; color: #065f46; }
+.urgency-low    { background: var(--neutral-bg); color: var(--muted); }
+.urgency-pending { background: var(--warn-bg); color: var(--warn); }
+
+/* ── Schedule action button ── */
+.schedule-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: #0f3d38;
+  color: #fff;
+  font-weight: 700;
+  font-size: .85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s;
+}
+
+.schedule-btn:hover:not(:disabled) { background: #0a2e2b; }
+.schedule-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .reports-table th:nth-child(3),
+  .reports-table td:nth-child(3) { display: none; }
+}
