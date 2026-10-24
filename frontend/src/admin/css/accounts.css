@@ -186,3 +186,99 @@
 @media (max-width: 760px) {
   .account-pagination { align-items: flex-start; flex-direction: column; }
 }
+
+/* ── Accounts stat cards (reuse dash-stat-card, custom grid) ── */
+.accounts-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+@media (max-width: 1100px) {
+  .accounts-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 480px) {
+  .accounts-stat-grid { grid-template-columns: 1fr; gap: 10px; }
+}
+
+/* ── Clickable stat cards ── */
+.accounts-stat-card {
+  cursor: pointer;
+  position: relative;
+  transition: transform .18s ease, box-shadow .18s ease, outline .1s ease;
+  outline: 2px solid transparent;
+  outline-offset: 3px;
+}
+
+.accounts-stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--tile-fg) 18%, transparent);
+}
+
+.accounts-stat-card:focus-visible {
+  outline-color: var(--brand, #0b7d6e);
+}
+
+.accounts-stat-card.is-selected {
+  outline: 2.5px solid var(--tile-fg);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--tile-fg) 14%, transparent);
+}
+
+/* Small active indicator dot at bottom-right */
+.accounts-card-active-dot {
+  position: absolute;
+  bottom: 10px;
+  right: 12px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--tile-fg);
+}
+
+/* ── Filtered / default panel header ── */
+.accounts-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.accounts-panel-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.accounts-pending-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #e63946;
+  color: #fff;
+  font-size: .72rem;
+  font-weight: 700;
+}
+
+/* Filtered panel entrance animation */
+.accounts-filtered-panel {
+  animation: panel-in .2s ease-out;
+}
+
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accounts-stat-card { transition: none; }
+  .accounts-stat-card:hover { transform: none; }
+  .accounts-filtered-panel { animation: none; }
+}

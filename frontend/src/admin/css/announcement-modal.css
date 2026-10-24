@@ -1,0 +1,191 @@
+/* ── Announcement modal backdrop ── */
+.ann-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgb(16 36 46 / 50%);
+  backdrop-filter: blur(4px);
+}
+
+/* ── Modal panel ── */
+.ann-modal {
+  width: min(100%, 560px);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 64px rgb(16 36 46 / 22%);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  overflow: hidden;
+}
+
+.ann-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ann-modal-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.ann-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+  transition: background .15s, color .15s;
+}
+
+.ann-modal-close:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+/* ── Form body ── */
+.ann-modal-body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Post type pills */
+.ann-type-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ann-type-pill {
+  padding: 6px 16px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: .84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.ann-type-pill:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.ann-type-pill.selected {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+
+.ann-type-pill.type-alert.selected    { background: #b91c1c; border-color: #b91c1c; }
+.ann-type-pill.type-event.selected    { background: #0369a1; border-color: #0369a1; }
+.ann-type-pill.type-tip.selected      { background: #15803d; border-color: #15803d; }
+.ann-type-pill.type-announce.selected { background: #0f3d38; border-color: #0f3d38; }
+
+/* Photo upload area */
+.ann-photo-area {
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  position: relative;
+}
+
+.ann-photo-area:hover {
+  border-color: var(--brand);
+  background: var(--soft);
+}
+
+.ann-photo-area input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  min-height: unset;
+  border: 0;
+}
+
+.ann-photo-area-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: .88rem;
+  pointer-events: none;
+}
+
+.ann-photo-area-text strong {
+  color: var(--brand);
+  font-weight: 600;
+}
+
+.ann-photo-preview {
+  position: relative;
+  display: inline-block;
+  margin-top: 8px;
+}
+
+.ann-photo-preview img {
+  max-height: 140px;
+  max-width: 100%;
+  border-radius: var(--radius-md);
+  display: block;
+  margin: 0 auto;
+}
+
+.ann-photo-remove {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 50%;
+  background: #e63946;
+  color: #fff;
+  font-size: .8rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* Footer */
+.ann-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 24px 20px;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 600px) {
+  .ann-modal-footer { flex-direction: column-reverse; }
+  .ann-modal-footer .button { width: 100%; justify-content: center; }
+}

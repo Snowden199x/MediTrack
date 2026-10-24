@@ -71,6 +71,15 @@ export function IconLogout() {
   )
 }
 
+export function IconMap() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 2C8.686 2 6 4.686 6 8c0 4.5 6 12 6 12s6-7.5 6-12c0-3.314-2.686-6-6-6Z" stroke="currentColor" strokeWidth="1.8" fill="currentColor" opacity=".2"/>
+      <circle cx="12" cy="8" r="2.2" fill="currentColor"/>
+    </svg>
+  )
+}
+
 export function IconBrandPlus() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">

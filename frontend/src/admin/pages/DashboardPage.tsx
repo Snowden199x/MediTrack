@@ -5,6 +5,8 @@ interface Props {
   totalResidents?: number
   pendingCount: number
   onSeeAllReports: () => void
+  onReviewRegistrations: () => void
+  onNewAnnouncement: () => void
 }
 
 type Tone = 'brand' | 'teal' | 'red' | 'coral' | 'deep'
@@ -71,8 +73,11 @@ const icons = {
   ),
 }
 
-export default function DashboardPage({ totalResidents = 0, pendingCount, onSeeAllReports }: Props) {
-  const today = new Date().toLocaleDateString('en-PH', { weekday: 'long', month: 'long', day: 'numeric' })
+export default function DashboardPage({ totalResidents = 0, pendingCount, onSeeAllReports, onReviewRegistrations, onNewAnnouncement }: Props) {
+  const dateStr = new Date().toLocaleDateString('en-PH', { weekday: 'long', month: 'long', day: 'numeric' })
+  const hour = new Date().getHours()
+  const period = hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening'
+  const greeting = `Good ${period}, Admin`
 
   const stats: { label: string; value: number; hint: string; tone: Tone; icon: ReactNode }[] = [
     { label: 'Total residents', value: totalResidents, hint: 'Approved accounts', tone: 'brand', icon: icons.users },
@@ -84,9 +89,30 @@ export default function DashboardPage({ totalResidents = 0, pendingCount, onSeeA
 
   return (
     <div className="admin-content dash">
-      <div className="admin-page-header">
-        <h1>Dashboard</h1>
-        <p>Health center overview · {today}</p>
+
+      {/* Greeting row */}
+      <div className="dash-greeting-row">
+        <div className="dash-greeting-left">
+          <span className="dash-greeting-date">{dateStr}</span>
+          <h1 className="dash-greeting-text">{greeting}</h1>
+        </div>
+        <div className="dash-greeting-actions">
+          <button className="admin-hdr-btn primary" onClick={onReviewRegistrations}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" fill="currentColor"/>
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
+            </svg>
+            Review registrations
+            {pendingCount > 0 && <span className="admin-hdr-count">{pendingCount}</span>}
+          </button>
+          <button className="admin-hdr-btn" onClick={onNewAnnouncement}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M18 2a3 3 0 0 1 3 3v1l-1 1-4-4 1-1h1Z" fill="currentColor"/>
+              <path d="M3 17.25V21h3.75L17 10.75l-3.75-3.75L3 17.25Z" fill="currentColor" opacity=".85"/>
+            </svg>
+            New announcement
+          </button>
+        </div>
       </div>
 
       <div className="dash-stat-grid">

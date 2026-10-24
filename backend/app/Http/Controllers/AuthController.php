@@ -36,6 +36,8 @@ class AuthController extends Controller
             'city_municipality_name' => ['required', 'string', 'max:150'],
             'barangay_code' => ['required', 'string', 'regex:/\A[0-9]{10}\z/'],
             'barangay_name' => ['required', 'string', 'max:150'],
+            'latitude' => ['nullable', 'numeric', 'between:-90,90'],
+            'longitude' => ['nullable', 'numeric', 'between:-180,180'],
         ]);
 
         $name = implode(' ', array_filter([
@@ -55,6 +57,8 @@ class AuthController extends Controller
 
             $household = Household::create([
                 'address' => $data['address'] ?? null,
+                'latitude' => $data['latitude'] ?? null,
+                'longitude' => $data['longitude'] ?? null,
                 'region_code' => $data['region_code'],
                 'region_name' => $data['region_name'],
                 'province_code' => $data['province_code'] ?? null,

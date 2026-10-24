@@ -1,24 +1,26 @@
 import {
   IconDashboard, IconReports, IconSchedule, IconPosts,
-  IconResidents, IconCheckup, IconLogout, IconBrandPlus,
+  IconResidents, IconCheckup, IconLogout, IconBrandPlus, IconMap,
 } from './AdminIcons'
+import type { AdminSection } from './adminTypes'
 import './css/sidebar.css'
 
-type Section = 'overview' | 'reports' | 'schedule' | 'posts' | 'accounts' | 'bhw'
+type Section = AdminSection
 
 interface Props {
   user: { name: string }
   section: Section
   pendingCount: number
+  collapsed: boolean
   onSection: (s: Section) => void
   onLogout: () => void
 }
 
-export default function AdminSidebar({ user, section, pendingCount, onSection, onLogout }: Props) {
+export default function AdminSidebar({ user, section, pendingCount, collapsed, onSection, onLogout }: Props) {
   const initials = user.name.split(' ').map((w: string) => w[0]).slice(0, 2).join('').toUpperCase()
 
   return (
-    <aside className="admin-sidebar">
+    <aside className={`admin-sidebar${collapsed ? ' admin-sidebar--collapsed' : ''}`}>
       {/* Brand */}
       <div className="admin-sidebar-brand">
         <div className="admin-brand-mark"><IconBrandPlus /></div>
@@ -58,6 +60,9 @@ export default function AdminSidebar({ user, section, pendingCount, onSection, o
         </button>
         <button className={section === 'bhw' ? 'active' : ''} onClick={() => onSection('bhw')}>
           <span className="nav-icon"><IconCheckup /></span>Checkup logs
+        </button>
+        <button className={section === 'map' ? 'active' : ''} onClick={() => onSection('map')}>
+          <span className="nav-icon"><IconMap /></span>Resident map
         </button>
       </nav>
 

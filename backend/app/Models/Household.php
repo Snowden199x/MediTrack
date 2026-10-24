@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
-    'address', 'region_code', 'region_name', 'province_code', 'province_name',
+    'address', 'latitude', 'longitude', 'region_code', 'region_name', 'province_code', 'province_name',
     'city_municipality_code', 'city_municipality_name', 'barangay_code', 'barangay_name', 'created_by',
 ])]
 class Household extends Model
