@@ -42,10 +42,38 @@ const loginSchema = z.object({
 function Landing({ go }) {
   return <main>
     <section className="landing-intro page-container">
-      <div><h1>Health follow-up for the barangay</h1><p>MediTrack gives residents a place to report concerns and helps barangay health teams keep visits, requests, and follow-ups organized.</p><div className="actions"><button className="button" onClick={() => go('/register')}>Create a resident account</button><button className="button secondary" onClick={() => go('/login')}>Sign in</button></div></div>
-      <aside className="landing-summary"><h2>How it works</h2><ol><li><strong>Residents share a concern.</strong><span>Answer short questions or send a request to the health team.</span></li><li><strong>Health workers review it.</strong><span>BHWs record visits, schedules, and follow-up actions.</span></li><li><strong>The health center sees trends.</strong><span>Authorized staff review area-level signals before taking action.</span></li></ol></aside>
+      <div className="landing-copy">
+        <h1>Health follow-up for the barangay</h1>
+        <p>MediTrack gives residents a place to report concerns and helps barangay health teams keep visits, requests, and follow-ups organized.</p>
+        <div className="actions"><button className="button" onClick={() => go('/register')}>Create a resident account</button><button className="button secondary" onClick={() => go('/login')}>Log in</button></div>
+      </div>
+      <div className="hero-visual" aria-hidden="true">
+        <div className="hero-card hero-card-main">
+          <div className="hero-card-head"><strong>Blood pressure check</strong><span className="badge badge-scheduled">scheduled</span></div>
+          <p>Tomorrow, 9:00 AM at the barangay health center</p>
+          <svg className="pulse" viewBox="0 0 260 60" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M2 34h64l12-24 18 46 16-36 10 14h136" /></svg>
+        </div>
+        <div className="hero-card hero-card-report"><strong>Symptom report sent</strong><p>Your BHW will review it.</p></div>
+        <div className="hero-card hero-card-follow"><div className="hero-card-head"><strong>Follow-up</strong><span className="badge badge-completed">completed</span></div><p>Resident reached and advised.</p></div>
+      </div>
     </section>
-    <section className="landing-section page-container"><h2>Made for everyday health-center work</h2><div className="feature-columns"><article><h3>For residents</h3><p>See reminders, report symptoms in a guided form, and receive a response to requests.</p></article><article><h3>For BHWs</h3><p>Keep resident records, record visits, and follow up on missed checkups or new concerns.</p></article><article><h3>For health-center staff</h3><p>Publish announcements and review aggregated symptom trends for possible follow-up.</p></article></div><p className="safety-copy">Symptom reporting helps describe a concern and decide who to contact next. It does not provide a diagnosis.</p></section>
+    <section className="landing-section page-container">
+      <h2>How it works</h2>
+      <ol className="steps">
+        <li><strong>Residents share a concern</strong><span>Answer short questions or send a request to the health team.</span></li>
+        <li><strong>Health workers review it</strong><span>BHWs record visits, schedules, and follow-up actions.</span></li>
+        <li><strong>The health center sees trends</strong><span>Authorized staff review area-level signals before taking action.</span></li>
+      </ol>
+    </section>
+    <section className="landing-section page-container">
+      <h2>Made for everyday health-center work</h2>
+      <div className="feature-columns">
+        <article><svg className="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" /></svg><h3>For residents</h3><p>See reminders, report symptoms in a guided form, and receive a response to requests.</p></article>
+        <article><svg className="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="4" width="14" height="17" rx="2" /><path d="M9 4V3h6v1M9 11h6M9 15h4" /></svg><h3>For BHWs</h3><p>Keep resident records, record visits, and follow up on missed checkups or new concerns.</p></article>
+        <article><svg className="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" /></svg><h3>For health-center staff</h3><p>Publish announcements and review aggregated symptom trends for possible follow-up.</p></article>
+      </div>
+      <p className="safety-copy">Symptom reporting helps describe a concern and decide who to contact next. It does not provide a diagnosis.</p>
+    </section>
   </main>
 }
 
@@ -73,14 +101,14 @@ function AuthForm({ mode, onAuth, go }) {
     catch (failure) { setError('root.server', { message: failure.message }) }
   }
 
-  if (registrationSent) return <main className="auth-wrap page-container"><div className="auth-panel"><h1>Registration submitted</h1><p className="notice" role="status">Your registration is waiting for superuser review. You can sign in after it is approved.</p><button className="button secondary" onClick={() => go('/login')}>Back to sign in</button></div></main>
+  if (registrationSent) return <main className="auth-wrap page-container"><div className="auth-panel"><h1>Registration submitted</h1><p className="notice" role="status">Your registration is waiting for superuser review. You can log in after it is approved.</p><button className="button secondary" onClick={() => go('/login')}>Back to log in</button></div></main>
 
-  return <main className="auth-wrap page-container"><div className="auth-panel"><h1>{registering ? 'Resident sign up' : 'Sign in'}</h1><p>{registering ? 'Complete your details and select your Philippine address. Resident accounts are reviewed before access.' : 'Use your MediTrack account to continue.'}</p><form className="form-stack" onSubmit={handleSubmit(submit)}>
+  return <main className="auth-wrap page-container"><div className="auth-panel"><h1>{registering ? 'Register as a resident' : 'Log in'}</h1><p>{registering ? 'Complete your details and select your Philippine address. Resident accounts are reviewed before access.' : 'Use your MediTrack account to continue.'}</p><form className="form-stack" onSubmit={handleSubmit(submit)}>
     {registering && <><div className="form-row"><label>First name<input required maxLength={100} autoComplete="given-name" {...register('first_name')} /></label><label>Last name<input required maxLength={100} autoComplete="family-name" {...register('last_name')} /></label></div><div className="form-row"><label>Middle initial <span className="optional">Optional</span><input maxLength={10} {...register('middle_initial')} /></label><label>Birthday<input required type="date" autoComplete="bday" {...register('birth_date')} /></label></div><label>Age<input required type="number" min="0" max="120" {...register('age')} /></label><label>Sex<select required {...register('sex')}><option value="">Select sex</option><option value="female">Female</option><option value="male">Male</option><option value="other">Other</option><option value="undisclosed">Prefer not to say</option></select></label><PsgcAddressFields value={form} onChange={location => Object.entries(location).forEach(([key, value]) => setValue(key as any, value))} /><label>House number / street <span className="optional">Optional</span><input maxLength={255} autoComplete="street-address" {...register('address')} /></label></>}
     <label>Email<input required type="email" autoComplete="email" {...register('email')} /></label><label>Password<div className="password-control"><input required type={passwordVisible ? 'text' : 'password'} autoComplete={registering ? 'new-password' : 'current-password'} minLength={8} {...register('password')} /><button className="password-toggle" type="button" aria-label={passwordVisible ? 'Hide password' : 'Show password'} aria-pressed={passwordVisible} onClick={() => setPasswordVisible(visible => !visible)}>{passwordVisible ? 'Hide' : 'Show'}</button></div>{registering && <span className="field-hint">Use at least 8 characters, including uppercase and lowercase letters, a number, and a symbol.</span>}</label>
     {registering && <label>Confirm password<div className="password-control"><input required type={confirmationVisible ? 'text' : 'password'} autoComplete="new-password" minLength={8} {...register('password_confirmation')} /><button className="password-toggle" type="button" aria-label={confirmationVisible ? 'Hide confirmation password' : 'Show confirmation password'} aria-pressed={confirmationVisible} onClick={() => setConfirmationVisible(visible => !visible)}>{confirmationVisible ? 'Hide' : 'Show'}</button></div></label>}
-    {validationMessage && <p className="notice error" role="alert">{validationMessage}</p>}<button className="button" disabled={isSubmitting}>{isSubmitting ? 'Please wait…' : registering ? 'Create account' : 'Sign in'}</button>
-  </form><p className="auth-switch">{registering ? 'Already have an account?' : 'Need a resident account?'} <button className="link-button" onClick={() => go(registering ? '/login' : '/register')}>{registering ? 'Sign in' : 'Sign up'}</button></p></div></main>
+    {validationMessage && <p className="notice error" role="alert">{validationMessage}</p>}<button className="button" disabled={isSubmitting}>{isSubmitting ? 'Please wait…' : registering ? 'Create account' : 'Log in'}</button>
+  </form><p className="auth-switch">{registering ? 'Already have an account?' : 'Need a resident account?'} <button className="link-button" onClick={() => go(registering ? '/login' : '/register')}>{registering ? 'Log in' : 'Register'}</button></p></div></main>
 }
 
 function App() {
@@ -127,8 +155,8 @@ function App() {
   const roleName = user?.role === 'health_center' ? 'Health center' : user?.role === 'bhw' ? 'BHW' : 'Resident'
   const homePath = '/app'
 
-  return <><header className="site-header"><div className="site-header-inner"><button className="brand" onClick={() => go(user ? homePath : '/')}>MediTrack</button><nav aria-label="Main navigation">{user ? <><span className="signed-in">{user.name} · {roleName}</span><button className="text-button" onClick={logout}>Sign out</button></> : <><button className="text-button" onClick={() => go('/login')}>Sign in</button><button className="button small" onClick={() => go('/register')}>Resident sign up</button></>}</nav></div></header>
-    {loading ? <main className="page-container workspace"><p>Loading…</p></main> : <Routes>
+  return <><header className="site-header"><div className="site-header-inner"><button className="brand" onClick={() => go(user ? homePath : '/')}><span className="brand-mark" aria-hidden="true" />MediTrack</button><nav aria-label="Main navigation">{user ? <><span className="signed-in">{user.name} · {roleName}</span><button className="text-button" onClick={logout}>Log out</button></> : <><button className="text-button" onClick={() => go('/login')}>Log in</button><button className="button small" onClick={() => go('/register')}>Register</button></>}</nav></div></header>
+    {loading ? <main className="page-container workspace"><p className="loading" role="status">Loading…</p></main> : <Routes>
       <Route path="/" element={<Landing go={go} />} />
       <Route path="/login" element={user ? <Landing go={go} /> : <AuthForm mode="login" onAuth={onAuth} go={go} />} />
       <Route path="/register" element={user ? <Landing go={go} /> : <AuthForm mode="register" onAuth={onAuth} go={go} />} />
