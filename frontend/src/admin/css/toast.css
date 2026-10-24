@@ -1,0 +1,148 @@
+/* ── Toast container ── */
+.toast-container {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+/* ── Individual toast ── */
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 280px;
+  max-width: 380px;
+  padding: 14px 16px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgb(16 36 46 / 15%);
+  border-left: 4px solid var(--brand);
+  pointer-events: all;
+  /* slide in from right */
+  animation: toast-slide-in .35s cubic-bezier(.22,.61,.36,1) both;
+}
+
+.toast.toast-exit {
+  animation: toast-slide-out .3s cubic-bezier(.55,0,1,.45) both;
+}
+
+.toast.toast-error {
+  border-left-color: var(--error);
+}
+
+@keyframes toast-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes toast-slide-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+}
+
+/* ── Toast icon ── */
+.toast-icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  color: var(--brand);
+}
+
+.toast-error .toast-icon {
+  color: var(--error);
+}
+
+/* ── Toast body ── */
+.toast-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.toast-message {
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* ── Progress bar ── */
+.toast-progress {
+  height: 3px;
+  background: var(--border);
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+  margin-top: 8px;
+  border-radius: 999px;
+}
+
+.toast-progress-bar {
+  height: 100%;
+  background: var(--brand);
+  border-radius: 999px;
+  animation: toast-progress 5s linear both;
+}
+
+.toast-error .toast-progress-bar {
+  background: var(--error);
+}
+
+@keyframes toast-progress {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+
+/* ── Dismiss button ── */
+.toast-dismiss {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--muted);
+  font-size: .85rem;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  margin-top: -2px;
+}
+
+.toast-dismiss:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+@media (max-width: 480px) {
+  .toast-container {
+    bottom: 16px;
+    right: 12px;
+    left: 12px;
+  }
+
+  .toast {
+    min-width: unset;
+    max-width: unset;
+    width: 100%;
+  }
+}

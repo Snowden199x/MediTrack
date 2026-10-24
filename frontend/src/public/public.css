@@ -36,3 +36,61 @@
   .hero-visual { min-height: 380px; }
   .steps, .feature-columns { grid-template-columns: 1fr; }
 }
+
+/* Location picker in registration form */
+.location-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border, #dde3ea);
+  border-radius: var(--radius, 8px);
+  background: var(--soft, #f6f8fa);
+}
+
+.location-picker-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.location-picker-label > span:first-child {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink, #111);
+}
+
+.location-picker-hint {
+  font-size: 0.78rem;
+  color: var(--muted, #666);
+  font-weight: 400 !important;
+}
+
+.location-status {
+  font-size: 0.82rem;
+  color: var(--muted, #666);
+  margin: 0;
+}
+
+.location-denied {
+  color: #b45309;
+}
+
+.location-captured {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  color: #166534;
+}
+
+.location-captured svg {
+  flex-shrink: 0;
+  color: #16a34a;
+}
+
+.location-captured .link-button {
+  margin-left: 0.25rem;
+  color: var(--muted, #666);
+  font-size: 0.78rem;
+}

@@ -5,6 +5,7 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/var/www/html:z
+      - backend_vendor:/var/www/html/vendor
     depends_on:
       postgres:
         condition: service_healthy
@@ -54,3 +55,4 @@ services:
 volumes:
   postgres_data:
   frontend_node_modules:
+  backend_vendor:

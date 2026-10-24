@@ -1,0 +1,65 @@
+/* ── Admin shell layout ── */
+.admin-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* ── Main content area ── */
+.admin-main {
+  flex: 1;
+  min-width: 0;
+  background: #f3f0eb;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.admin-content {
+  width: 100%;
+  padding: 36px 40px 72px;
+}
+
+.admin-page-header {
+  margin-bottom: 28px;
+}
+
+.admin-page-header h1 {
+  font-size: 1.75rem;
+  margin-bottom: 4px;
+}
+
+.admin-page-header p {
+  color: var(--muted);
+  margin: 0;
+  font-size: .88rem;
+}
+
+/* ── Responsive breakpoints ── */
+
+/* Tablet: collapse sidebar to top bar */
+@media (max-width: 900px) {
+  .admin-shell {
+    flex-direction: column;
+  }
+
+  .admin-content {
+    padding: 24px 20px 48px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .admin-content {
+    padding: 16px 14px 40px;
+  }
+
+  .admin-page-header h1 {
+    font-size: 1.4rem;
+  }
+}

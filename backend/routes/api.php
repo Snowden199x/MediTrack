@@ -9,6 +9,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CareRequestController;
 use App\Http\Controllers\PsgcLocationController;
 use App\Http\Controllers\ResidentController;
+use App\Http\Controllers\ResidentMapController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\SymptomReportController;
 use Illuminate\Http\Request;
@@ -42,6 +43,8 @@ Route::middleware(['auth:sanctum', 'active'])->group(function () {
         Route::patch('/registrations/{user}', [AdminRegistrationController::class, 'update']);
         Route::get('/bhw-accounts', [AdminBhwAccountController::class, 'index']);
         Route::post('/bhw-accounts', [AdminBhwAccountController::class, 'store']);
+        Route::get('/resident-map', [ResidentMapController::class, 'index']);
+        Route::post('/announcements', [AnnouncementController::class, 'store']);
     });
 
     Route::middleware('role:resident')->prefix('resident')->group(function () {

@@ -8,6 +8,7 @@ import { api, getToken, setToken } from '../shared/api'
 import ResidentWorkspace from '../resident/ResidentWorkspace'
 import StaffWorkspace from '../staff/StaffWorkspace'
 import PsgcAddressFields from '../shared/PsgcAddressFields'
+import LocationPickerModal from '../shared/LocationPickerModal'
 import './public.css'
 
 const residentRegistrationSchema = z.object({
@@ -27,6 +28,8 @@ const residentRegistrationSchema = z.object({
   city_municipality_name: z.string(),
   barangay_code: z.string(),
   barangay_name: z.string(),
+  latitude: z.number().nullable(),
+  longitude: z.number().nullable(),
   password: z.string().min(8).regex(/[a-z]/, 'Include a lowercase letter.').regex(/[A-Z]/, 'Include an uppercase letter.').regex(/\d/, 'Include a number.').regex(/[^A-Za-z0-9]/, 'Include a symbol.'),
   password_confirmation: z.string().min(8),
 }).refine((values) => values.password === values.password_confirmation, {
@@ -82,17 +85,29 @@ function AuthForm({ mode, onAuth, go }) {
   const [registrationSent, setRegistrationSent] = useState(false)
   const [passwordVisible, setPasswordVisible] = useState(false)
   const [confirmationVisible, setConfirmationVisible] = useState(false)
+  const [showMapPicker, setShowMapPicker] = useState(false)
   const { register, handleSubmit, setError, setValue, watch, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver((registering ? residentRegistrationSchema : loginSchema) as any),
-    defaultValues: { first_name: '', middle_initial: '', last_name: '', birth_date: '', age: '', sex: '', email: '', address: '', region_code: '', region_name: '', province_code: '', province_name: '', city_municipality_code: '', city_municipality_name: '', barangay_code: '', barangay_name: '', password: '', password_confirmation: '' },
+    defaultValues: { first_name: '', middle_initial: '', last_name: '', birth_date: '', age: '', sex: '', email: '', address: '', region_code: '', region_name: '', province_code: '', province_name: '', city_municipality_code: '', city_municipality_name: '', barangay_code: '', barangay_name: '', latitude: null, longitude: null, password: '', password_confirmation: '' },
   })
   const form = watch()
   const validationMessage = (errors.root?.server?.message || Object.values(errors).map(error => error?.message).find(Boolean)) as string | undefined
 
+  function handleLocationConfirm(coords: { lat: number; lng: number }) {
+    setValue('latitude', coords.lat)
+    setValue('longitude', coords.lng)
+    setShowMapPicker(false)
+  }
+
+  function clearLocation() {
+    setValue('latitude', null)
+    setValue('longitude', null)
+  }
+
   async function submit(values) {
     try {
       const body = registering
-        ? { ...values, age: Number(values.age), province_code: values.province_code || null, province_name: values.province_name || null, address: values.address || null }
+        ? { ...values, age: Number(values.age), province_code: values.province_code || null, province_name: values.province_name || null, address: values.address || null, latitude: values.latitude ?? null, longitude: values.longitude ?? null }
         : { email: values.email, password: values.password }
       const result = await api(registering ? '/register' : '/login', { method: 'POST', body })
       if (registering) setRegistrationSent(true)
@@ -104,7 +119,34 @@ function AuthForm({ mode, onAuth, go }) {
   if (registrationSent) return <main className="auth-wrap page-container"><div className="auth-panel"><h1>Registration submitted</h1><p className="notice" role="status">Your registration is waiting for superuser review. You can log in after it is approved.</p><button className="button secondary" onClick={() => go('/login')}>Back to log in</button></div></main>
 
   return <main className="auth-wrap page-container"><div className="auth-panel"><h1>{registering ? 'Register as a resident' : 'Log in'}</h1><p>{registering ? 'Complete your details and select your Philippine address. Resident accounts are reviewed before access.' : 'Use your MediTrack account to continue.'}</p><form className="form-stack" onSubmit={handleSubmit(submit)}>
-    {registering && <><div className="form-row"><label>First name<input required maxLength={100} autoComplete="given-name" {...register('first_name')} /></label><label>Last name<input required maxLength={100} autoComplete="family-name" {...register('last_name')} /></label></div><div className="form-row"><label>Middle initial <span className="optional">Optional</span><input maxLength={10} {...register('middle_initial')} /></label><label>Birthday<input required type="date" autoComplete="bday" {...register('birth_date')} /></label></div><label>Age<input required type="number" min="0" max="120" {...register('age')} /></label><label>Sex<select required {...register('sex')}><option value="">Select sex</option><option value="female">Female</option><option value="male">Male</option><option value="other">Other</option><option value="undisclosed">Prefer not to say</option></select></label><PsgcAddressFields value={form} onChange={location => Object.entries(location).forEach(([key, value]) => setValue(key as any, value))} /><label>House number / street <span className="optional">Optional</span><input maxLength={255} autoComplete="street-address" {...register('address')} /></label></>}
+    {registering && <><div className="form-row"><label>First name<input required maxLength={100} autoComplete="given-name" {...register('first_name')} /></label><label>Last name<input required maxLength={100} autoComplete="family-name" {...register('last_name')} /></label></div><div className="form-row"><label>Middle initial <span className="optional">Optional</span><input maxLength={10} {...register('middle_initial')} /></label><label>Birthday<input required type="date" autoComplete="bday" {...register('birth_date')} /></label></div><label>Age<input required type="number" min="0" max="120" {...register('age')} /></label><label>Sex<select required {...register('sex')}><option value="">Select sex</option><option value="female">Female</option><option value="male">Male</option><option value="other">Other</option><option value="undisclosed">Prefer not to say</option></select></label><PsgcAddressFields value={form} onChange={location => Object.entries(location).forEach(([key, value]) => setValue(key as any, value))} /><label>House number / street <span className="optional">Optional</span><input maxLength={255} autoComplete="street-address" {...register('address')} /></label>
+      <div className="location-picker">
+        <div className="location-picker-label">
+          <span>Home location <span className="optional">Optional</span></span>
+          <span className="location-picker-hint">Open the map and click your exact home location. This helps the health center find your household.</span>
+        </div>
+        {form.latitude && form.longitude ? (
+          <div className="location-captured">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 2C8.686 2 6 4.686 6 8c0 4.5 6 12 6 12s6-7.5 6-12c0-3.314-2.686-6-6-6Z"/><circle cx="12" cy="8" r="2"/></svg>
+            <span>Location pinned ({(form.latitude as number).toFixed(5)}, {(form.longitude as number).toFixed(5)})</span>
+            <button type="button" className="link-button" onClick={() => setShowMapPicker(true)}>Edit</button>
+            <button type="button" className="link-button" onClick={clearLocation}>Remove</button>
+          </div>
+        ) : (
+          <button type="button" className="button secondary small" onClick={() => setShowMapPicker(true)}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 2C8.686 2 6 4.686 6 8c0 4.5 6 12 6 12s6-7.5 6-12c0-3.314-2.686-6-6-6Z"/><circle cx="12" cy="8" r="2"/></svg>
+            Set location on map
+          </button>
+        )}
+      </div>
+      {showMapPicker && (
+        <LocationPickerModal
+          initial={form.latitude && form.longitude ? { lat: form.latitude as number, lng: form.longitude as number } : null}
+          onConfirm={handleLocationConfirm}
+          onClose={() => setShowMapPicker(false)}
+        />
+      )}
+    </>}
     <label>Email<input required type="email" autoComplete="email" {...register('email')} /></label><label>Password<div className="password-control"><input required type={passwordVisible ? 'text' : 'password'} autoComplete={registering ? 'new-password' : 'current-password'} minLength={8} {...register('password')} /><button className="password-toggle" type="button" aria-label={passwordVisible ? 'Hide password' : 'Show password'} aria-pressed={passwordVisible} onClick={() => setPasswordVisible(visible => !visible)}>{passwordVisible ? 'Hide' : 'Show'}</button></div>{registering && <span className="field-hint">Use at least 8 characters, including uppercase and lowercase letters, a number, and a symbol.</span>}</label>
     {registering && <label>Confirm password<div className="password-control"><input required type={confirmationVisible ? 'text' : 'password'} autoComplete="new-password" minLength={8} {...register('password_confirmation')} /><button className="password-toggle" type="button" aria-label={confirmationVisible ? 'Hide confirmation password' : 'Show confirmation password'} aria-pressed={confirmationVisible} onClick={() => setConfirmationVisible(visible => !visible)}>{confirmationVisible ? 'Hide' : 'Show'}</button></div></label>}
     {validationMessage && <p className="notice error" role="alert">{validationMessage}</p>}<button className="button" disabled={isSubmitting}>{isSubmitting ? 'Please wait…' : registering ? 'Create account' : 'Log in'}</button>
@@ -154,15 +196,30 @@ function App() {
 
   const roleName = user?.role === 'health_center' ? 'Health center' : user?.role === 'bhw' ? 'BHW' : 'Resident'
   const homePath = '/app'
+  // Resident workspace is a full-page shell (like admin); suppress the public header/footer for it.
+  const isResidentShell = Boolean(user && user.role === 'resident')
+
+  if (loading) {
+    return <main className="page-container workspace"><p className="loading" role="status">Loading…</p></main>
+  }
+
+  if (isResidentShell) {
+    return (
+      <Routes>
+        <Route path="/app" element={<ResidentWorkspace user={user} onRefreshUser={refreshUser} onLogout={logout} />} />
+        <Route path="*" element={<Navigate to="/app" replace />} />
+      </Routes>
+    )
+  }
 
   return <><header className="site-header"><div className="site-header-inner"><button className="brand" onClick={() => go(user ? homePath : '/')}><span className="brand-mark" aria-hidden="true" />MediTrack</button><nav aria-label="Main navigation">{user ? <><span className="signed-in">{user.name} · {roleName}</span><button className="text-button" onClick={logout}>Log out</button></> : <><button className="text-button" onClick={() => go('/login')}>Log in</button><button className="button small" onClick={() => go('/register')}>Register</button></>}</nav></div></header>
-    {loading ? <main className="page-container workspace"><p className="loading" role="status">Loading…</p></main> : <Routes>
+    <Routes>
       <Route path="/" element={<Landing go={go} />} />
       <Route path="/login" element={user ? <Landing go={go} /> : <AuthForm mode="login" onAuth={onAuth} go={go} />} />
       <Route path="/register" element={user ? <Landing go={go} /> : <AuthForm mode="register" onAuth={onAuth} go={go} />} />
-      <Route path="/app" element={user && user.role !== 'superuser' ? user.role === 'resident' ? <ResidentWorkspace user={user} onRefreshUser={refreshUser} /> : <StaffWorkspace user={user} /> : <Landing go={go} />} />
+      <Route path="/app" element={user && user.role !== 'superuser' ? <StaffWorkspace user={user} /> : <Landing go={go} />} />
       <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>}
+    </Routes>
     <footer className="site-footer"><div className="page-container">MediTrack · Barangay health follow-up</div></footer>
   </>
 }
