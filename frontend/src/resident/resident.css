@@ -1,5 +1,6 @@
-.resident-layout { grid-template-columns: 275px minmax(0, 1fr); }
-.next-step { margin-top: 20px; padding: 18px; background: var(--soft); border-radius: 8px; }
+.resident-layout { grid-template-columns: 290px minmax(0, 1fr); }
+.next-step { margin-top: 22px; padding: 18px 20px; background: var(--soft); border-radius: var(--radius-md); }
+.next-step h3 { margin-bottom: 6px; }
 .next-step p { margin-bottom: 0; }
 
 @media (max-width: 760px) {
