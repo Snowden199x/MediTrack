@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter } from 'react-router-dom'
 import './styles/base.css'
-import './shared/shared.css'
+import './styles/shared.css'
 
 const rootElement = document.getElementById('root')
 
@@ -22,7 +22,7 @@ const queryClient = new QueryClient({
 })
 const appModule = import.meta.env.VITE_APP_MODE === 'admin'
   ? import('./admin/AdminApp')
-  : import('./public/PublicApp')
+  : import('./portal/PortalApp')
 
 appModule.then(({ default: App }) => {
   root.render(

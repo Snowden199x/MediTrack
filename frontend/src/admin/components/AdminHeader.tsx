@@ -1,4 +1,4 @@
-import './css/header.css'
+import '../css/header.css'
 import type { AdminSection } from './adminTypes'
 
 type Section = AdminSection
@@ -6,6 +6,7 @@ type Section = AdminSection
 const sectionLabels: Record<Section, string> = {
   overview: 'Dashboard',
   reports: 'Reports',
+  symptoms: 'Symptom reports',
   schedule: 'Schedule',
   posts: 'Posts',
   accounts: 'Resident accounts',

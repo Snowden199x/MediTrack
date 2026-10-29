@@ -1,5 +1,5 @@
 import '../css/posts.css'
-import { IconPosts } from '../AdminIcons'
+import { IconPosts } from '../components/AdminIcons'
 
 interface Props {
   onNewAnnouncement: () => void

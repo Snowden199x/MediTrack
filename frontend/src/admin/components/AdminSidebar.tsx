@@ -1,9 +1,9 @@
 import {
-  IconDashboard, IconReports, IconSchedule, IconPosts,
+  IconDashboard, IconReports, IconSymptomReports, IconSchedule, IconPosts,
   IconResidents, IconCheckup, IconLogout, IconBrandPlus, IconMap,
 } from './AdminIcons'
 import type { AdminSection } from './adminTypes'
-import './css/sidebar.css'
+import '../css/sidebar.css'
 
 type Section = AdminSection
 
@@ -11,12 +11,13 @@ interface Props {
   user: { name: string }
   section: Section
   pendingCount: number
+  newReportCount: number
   collapsed: boolean
   onSection: (s: Section) => void
   onLogout: () => void
 }
 
-export default function AdminSidebar({ user, section, pendingCount, collapsed, onSection, onLogout }: Props) {
+export default function AdminSidebar({ user, section, pendingCount, newReportCount, collapsed, onSection, onLogout }: Props) {
   const initials = user.name.split(' ').map((w: string) => w[0]).slice(0, 2).join('').toUpperCase()
 
   return (
@@ -47,6 +48,10 @@ export default function AdminSidebar({ user, section, pendingCount, collapsed, o
         </button>
         <button className={section === 'reports' ? 'active' : ''} onClick={() => onSection('reports')}>
           <span className="nav-icon"><IconReports /></span>Reports
+        </button>
+        <button className={section === 'symptoms' ? 'active' : ''} onClick={() => onSection('symptoms')}>
+          <span className="nav-icon"><IconSymptomReports /></span>Symptom reports
+          {newReportCount > 0 && <span className="nav-badge">{newReportCount}</span>}
         </button>
         <button className={section === 'schedule' ? 'active' : ''} onClick={() => onSection('schedule')}>
           <span className="nav-icon"><IconSchedule /></span>Schedule

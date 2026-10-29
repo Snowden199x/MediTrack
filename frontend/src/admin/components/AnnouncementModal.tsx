@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
-import { api } from '../shared/api'
-import './css/announcement-modal.css'
+import { api } from '../../shared/api'
+import '../css/announcement-modal.css'
 
 const POST_TYPES = [
   { value: 'announcement', label: 'Announcement', cls: 'type-announce' },

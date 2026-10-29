@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { api } from '../shared/api'
 import PsgcAddressFields from '../shared/PsgcAddressFields'
-import ResidentSidebar, { type ResidentSection } from './ResidentSidebar'
+import ResidentSidebar, { type ResidentSection } from './components/ResidentSidebar'
 import HomePage from './pages/HomePage'
-import ReportSymptomsPage from './pages/ReportSymptomsPage'
+import ReportSymptomsPage, { type SymptomReportPayload } from './pages/ReportSymptomsPage'
 import MyCheckupsPage from './pages/MyCheckupsPage'
 import NewsPage from './pages/NewsPage'
 import RegisterAccountPage from './pages/RegisterAccountPage'
@@ -32,14 +32,6 @@ interface ProfileState {
   barangay_name: string
 }
 
-interface ReportState {
-  category: string
-  onset_date: string
-  severity: string
-  details: string
-  answers: Record<string, string>
-}
-
 export default function ResidentWorkspace({ user, onRefreshUser, onLogout }: Props) {
   const [section, setSection] = useState<ResidentSection>('home')
   const [dashboard, setDashboard] = useState<any>(null)
@@ -52,10 +44,6 @@ export default function ResidentWorkspace({ user, onRefreshUser, onLogout }: Pro
     city_municipality_code: '', city_municipality_name: '',
     barangay_code: '', barangay_name: '',
   })
-  const [report, setReport] = useState<ReportState>({
-    category: '', onset_date: '', severity: 'unsure', details: '', answers: {},
-  })
-  const [nextStep, setNextStep] = useState('')
 
   async function refresh() {
     try {
@@ -169,20 +157,13 @@ export default function ResidentWorkspace({ user, onRefreshUser, onLogout }: Pro
 
         {section === 'report' && (
           <ReportSymptomsPage
-            categories={categories}
-            report={report}
-            nextStep={nextStep}
-            onReportChange={setReport}
-            onSubmit={event => submitForm(
-              event,
-              '/resident/symptom-reports',
-              { ...report, onset_date: report.onset_date || null },
-              async result => {
-                setNextStep(result.next_step ?? '')
-                setReport({ category: '', onset_date: '', severity: 'unsure', details: '', answers: {} })
-                setNotice('Your report was sent.')
-              },
-            )}
+            residentName={user.name}
+            onSend={async (payload: SymptomReportPayload) => {
+              const result = await api('/resident/symptom-reports', { method: 'POST', body: payload })
+              setNotice('Your report was sent.')
+              await refresh()
+              return result.next_step ?? ''
+            }}
           />
         )}
 

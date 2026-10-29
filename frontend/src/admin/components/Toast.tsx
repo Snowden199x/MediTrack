@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import './css/toast.css'
+import '../css/toast.css'
 
 export interface ToastItem {
   id: number

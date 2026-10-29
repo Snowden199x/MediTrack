@@ -1,0 +1,585 @@
+/* ── Resident symptom chat ─────────────────────────────────────────────────
+   Palette: Deep Teal #195A5F · Care Teal #12B8B0 · Coral #D97F6C · Warm White #F3EDE6
+   Light mode only. Scoped to .schat-* so nothing else on the resident side moves.
+   ------------------------------------------------------------------------- */
+
+.schat-page {
+  --schat-deep: #195a5f;
+  --schat-care: #12b8b0;
+  --schat-coral: #d97f6c;
+  --schat-warm: #f3ede6;
+  --schat-ink: #123c3e;
+  --schat-muted: #5d7a7b;
+  --schat-line: rgba(25, 90, 95, 0.12);
+
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.schat-page .schat-page-header {
+  margin-bottom: 18px;
+}
+
+.schat-page .schat-page-header h1 {
+  color: var(--schat-deep);
+}
+
+.schat-disclaimer {
+  display: inline-block;
+  margin: 10px 0 0 !important;
+  padding: 8px 12px;
+  border: 1px solid var(--schat-line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--schat-muted) !important;
+  font-size: 0.78rem !important;
+  line-height: 1.5;
+}
+
+/* ── Chat card ── */
+.schat-card {
+  display: flex;
+  flex-direction: column;
+  height: min(72vh, 660px);
+  min-height: 470px;
+  overflow: hidden;
+  background: var(--schat-warm);
+  border: 1px solid var(--schat-line);
+  border-radius: 24px;
+  box-shadow: 0 2px 4px rgb(16 36 46 / 4%), 0 16px 40px rgb(16 36 46 / 7%);
+}
+
+.schat-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+  padding: 13px 18px;
+  background: #fff;
+  border-bottom: 1px solid var(--schat-line);
+}
+
+.schat-card-head-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.schat-card-head-text strong {
+  color: var(--schat-deep);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.schat-card-head-text span {
+  color: var(--schat-muted);
+  font-size: 0.74rem;
+}
+
+.schat-step-pill {
+  margin-left: auto;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #e4f7f5;
+  color: #0d6d6a;
+  font-size: 0.74rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ── Avatar ── */
+.schat-avatar {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--schat-care);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgb(18 184 176 / 12%);
+}
+
+/* ── Conversation ── */
+.schat-log {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  padding: 20px 18px 12px;
+  scrollbar-color: rgb(25 90 95 / 25%) transparent;
+}
+
+.schat-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.schat-row.is-assistant { justify-content: flex-start; }
+.schat-row.is-resident { justify-content: flex-end; }
+
+.schat-bubble {
+  max-width: min(78%, 500px);
+  padding: 12px 16px;
+  border-radius: 18px;
+  font-size: 0.94rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  box-shadow: 0 1px 2px rgb(16 36 46 / 5%);
+}
+
+.schat-bubble p { margin: 0; }
+.schat-bubble p + p { margin-top: 4px; }
+
+.schat-bubble.is-assistant {
+  background: #fff;
+  color: var(--schat-ink);
+  border-bottom-left-radius: 6px;
+}
+
+.schat-bubble.is-resident {
+  background: var(--schat-deep);
+  color: #fff;
+  font-weight: 500;
+  border-bottom-right-radius: 6px;
+}
+
+.schat-bubble-note {
+  color: var(--schat-muted) !important;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+/* Typing dots */
+.schat-typing {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 15px 16px;
+}
+
+.schat-typing span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--schat-care);
+  animation: schat-dot 1.1s ease-in-out infinite;
+}
+
+.schat-typing span:nth-child(2) { animation-delay: 0.15s; }
+.schat-typing span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes schat-dot {
+  0%, 60%, 100% { opacity: 0.35; transform: translateY(0); }
+  30%           { opacity: 1;    transform: translateY(-4px); }
+}
+
+/* ── Urgent notice (coral) ── */
+.schat-urgent {
+  align-self: stretch;
+  width: 100%;
+  max-width: 560px;
+  margin: 2px auto;
+  padding: 14px 16px;
+  border: 1.5px solid var(--schat-coral);
+  border-radius: 14px;
+  background: #fdeee9;
+  color: #7c3423;
+}
+
+.schat-urgent strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.92rem;
+}
+
+.schat-urgent p {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+/* ── Composer ── */
+.schat-composer {
+  flex: none;
+  padding: 10px 18px 16px;
+  background: #fff;
+  border-top: 1px solid var(--schat-line);
+}
+
+.schat-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.schat-progress-track {
+  flex: 1;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(25, 90, 95, 0.12);
+}
+
+.schat-progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--schat-deep), var(--schat-care));
+  transition: width 0.35s ease;
+}
+
+.schat-back {
+  padding: 4px 2px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--schat-deep);
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.schat-back:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ── Option chips ── */
+.schat-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 208px;
+  overflow-y: auto;
+  padding: 2px 2px 4px;
+}
+
+.schat-chip {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  min-width: 132px;
+  min-height: 48px;
+  padding: 11px 16px;
+  border: 1.5px solid rgba(25, 90, 95, 0.22);
+  border-radius: 16px;
+  background: #fff;
+  color: var(--schat-deep);
+  font-weight: 650;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.schat-chip:hover {
+  border-color: var(--schat-care);
+  background: #f1fffd;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgb(18 184 176 / 14%);
+}
+
+.schat-chip:active { transform: translateY(0) scale(0.99); }
+
+.schat-chip-label { font-size: 0.95rem; }
+
+.schat-chip-hint {
+  color: var(--schat-muted);
+  font-size: 0.74rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.schat-chip.is-selected {
+  border-color: var(--schat-care);
+  background: var(--schat-care);
+  color: #04312f;
+}
+
+.schat-chip.is-selected .schat-chip-hint { color: rgb(4 49 47 / 78%); }
+
+.schat-chip.is-urgent { border-color: rgb(217 127 108 / 65%); }
+.schat-chip.is-urgent:hover { border-color: var(--schat-coral); background: #fff6f3; }
+
+.schat-chip.is-quiet {
+  flex: 0 0 auto;
+  align-items: center;
+  min-width: 0;
+  padding: 10px 18px;
+  border-color: transparent;
+  background: var(--schat-warm);
+}
+
+.schat-chip.is-quiet:hover { background: #eae1d7; box-shadow: none; }
+
+/* ── Notes and date ── */
+.schat-notes,
+.schat-date {
+  display: grid;
+  gap: 8px;
+}
+
+.schat-notes textarea {
+  min-height: 78px;
+  border-radius: 14px;
+  background: #fbf8f4;
+}
+
+.schat-date label {
+  color: var(--schat-deep);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.schat-date input { max-width: 240px; }
+
+.schat-inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.schat-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--schat-deep);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: background 0.15s;
+}
+
+.schat-primary:hover:not(:disabled) { background: #12484c; }
+
+/* ── Summary before sending ── */
+.schat-summary,
+.schat-done {
+  width: 100%;
+  max-width: 620px;
+  margin: 2px auto;
+  padding: 20px;
+  border: 1px solid var(--schat-line);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgb(16 36 46 / 5%);
+}
+
+.schat-summary h2 {
+  margin-bottom: 4px;
+  color: var(--schat-deep);
+  font-size: 1.1rem;
+}
+
+.schat-summary-lede {
+  margin-bottom: 14px;
+  color: var(--schat-muted);
+  font-size: 0.84rem;
+}
+
+.schat-summary-list {
+  display: grid;
+  margin: 0 0 16px;
+}
+
+.schat-summary-row {
+  display: grid;
+  gap: 3px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eef1ef;
+}
+
+.schat-summary-row:last-child { border-bottom: 0; }
+
+.schat-summary-row dt {
+  color: var(--schat-muted);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.schat-summary-row dd {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  color: var(--schat-ink);
+  font-size: 0.92rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.schat-edit {
+  flex: none;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: #0d7f7a;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.schat-edit:hover { color: var(--schat-deep); }
+
+.schat-summary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.schat-summary .schat-urgent,
+.schat-done .schat-urgent {
+  max-width: none;
+  margin: 12px 0;
+}
+
+/* Care Teal primary actions inside the chat */
+.schat-summary-actions .button,
+.schat-done .button {
+  background: var(--schat-care);
+  border-color: var(--schat-care);
+  color: #04312f;
+}
+
+.schat-summary-actions .button:hover:not(:disabled),
+.schat-done .button:hover:not(:disabled) {
+  background: #0fa39c;
+  border-color: #0fa39c;
+}
+
+.schat-summary-actions .button.secondary {
+  background: #fff;
+  border-color: rgba(25, 90, 95, 0.25);
+  color: var(--schat-deep);
+}
+
+.schat-summary-actions .button.secondary:hover:not(:disabled) {
+  background: var(--schat-warm);
+  border-color: var(--schat-deep);
+}
+
+/* ── Sent state ── */
+.schat-done-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 12px;
+  border-radius: 50%;
+  background: #e2f7f4;
+  color: #0d7f7a;
+}
+
+.schat-done h2 {
+  margin-bottom: 6px;
+  color: var(--schat-deep);
+  font-size: 1.15rem;
+}
+
+.schat-done > p {
+  margin-bottom: 0;
+  color: var(--schat-ink);
+  font-size: 0.9rem;
+}
+
+.schat-done h3 {
+  margin: 18px 0 8px;
+  color: var(--schat-deep);
+  font-size: 0.92rem;
+}
+
+.schat-advice {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 16px;
+  padding-left: 20px;
+  color: #33595a;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.schat-advice li::marker { color: var(--schat-care); }
+
+.schat-done .schat-help-note {
+  margin: 0 0 12px;
+  padding: 11px 14px;
+  border-left: 4px solid var(--schat-coral);
+  border-radius: 10px;
+  background: #fdf0eb;
+  color: #6e3220;
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+.schat-done .schat-help-note strong { font-weight: 700; }
+
+.schat-done .schat-guidance-note {
+  margin: 0 0 16px;
+  color: var(--schat-muted);
+  font-size: 0.76rem;
+}
+
+.schat-done .schat-next-step {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #f6f2ec;
+  color: var(--schat-muted);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.schat-foot-note {
+  margin: 12px 2px 0;
+  color: var(--schat-muted);
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+/* ── Responsive ── */
+@media (max-width: 700px) {
+  .schat-card {
+    height: calc(100dvh - 232px);
+    min-height: 430px;
+    border-radius: 20px;
+  }
+
+  .schat-card-head { padding: 12px 14px; }
+  .schat-log { gap: 10px; padding: 16px 12px 8px; }
+  .schat-bubble { max-width: 86%; font-size: 0.9rem; }
+  .schat-composer { padding: 10px 12px 14px; }
+  .schat-chips { max-height: 190px; }
+  .schat-chip { flex: 1 1 calc(50% - 8px); min-width: 0; padding: 10px 12px; }
+  .schat-chip.is-quiet { flex: 0 0 auto; }
+  .schat-chip-hint { display: none; }
+  .schat-summary,
+  .schat-done { padding: 16px; }
+}
+
+@media (max-width: 430px) {
+  .schat-chip { flex: 1 1 100%; }
+  .schat-chip.is-quiet { flex: 0 0 auto; }
+  .schat-bubble { max-width: 92%; }
+  .schat-date input { max-width: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .schat-chip:hover { transform: none; }
+  .schat-progress-fill { transition: none; }
+}

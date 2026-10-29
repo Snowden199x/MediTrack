@@ -1,7 +1,7 @@
 import {
   IconHome, IconReport, IconCheckup, IconNews, IconRegister, IconLogout, IconBrandPlus,
 } from './ResidentIcons'
-import './css/sidebar.css'
+import '../css/sidebar.css'
 
 export type ResidentSection = 'home' | 'report' | 'checkups' | 'news' | 'register'
 

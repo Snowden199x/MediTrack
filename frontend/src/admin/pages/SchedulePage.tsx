@@ -1,5 +1,5 @@
 import '../css/schedule.css'
-import { IconSchedule } from '../AdminIcons'
+import { IconSchedule } from '../components/AdminIcons'
 
 export default function SchedulePage() {
   return (

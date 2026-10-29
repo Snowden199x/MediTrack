@@ -1,4 +1,4 @@
-import type { ResidentSection } from '../ResidentSidebar'
+import type { ResidentSection } from '../components/ResidentSidebar'
 import '../css/dashboard.css'
 
 interface Appointment {
