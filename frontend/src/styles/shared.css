@@ -98,7 +98,7 @@ p { line-height: 1.7; }
 .auth-switch { margin: 22px 0 0; padding-top: 18px; border-top: 1px solid var(--border); color: var(--muted); }
 
 /* Section navigation */
-.tabs { display: flex; flex-direction: column; gap: 4px; padding: 10px; background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+.tabs { display: flex; flex-direction: column; gap: 4px; padding: 10px; background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); min-height: 420px; }
 .tabs button { padding: 11px 14px; border: 0; border-radius: var(--radius-md); background: none; color: var(--muted); font-weight: 600; text-align: left; transition: background .15s, color .15s; }
 .tabs button:hover { color: var(--ink); background: var(--surface-2); }
 .tabs button.active { color: var(--brand-strong); background: var(--soft); font-weight: 700; }

@@ -10,6 +10,7 @@ This folder describes the current repository, implemented code, and proposed wor
 - [BHW visits and follow-up spec](features/bhw/visits-and-follow-up/spec.md) — current visit records, schedules, and remaining workflow work.
 - [Resident symptom reporting spec](features/resident/symptom-reporting/spec.md) — current guided intake and clinical review needed.
 - [Area trend alerts spec](features/health-center/area-trend-alerts/spec.md) — staff-only aggregate review and disabled-by-default signals.
+- [Admin symptom reports spec](features/health-center/symptom-reports/spec.md) — prototype admin review page with sample reports and a prepared resident notification outbox.
 - [Security overview](security.md) — current controls and remaining decisions. This is not a penetration test or production certification.
 - [Progress log](logs/PROGRESS-2026-10-19.md) — dated implementation notes and remaining work.
 

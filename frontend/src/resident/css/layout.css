@@ -1,0 +1,62 @@
+/* ── Resident shell layout ── */
+.resident-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.resident-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* ── Main content area ── */
+.resident-main {
+  flex: 1;
+  min-width: 0;
+  background: #f3f0eb;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.resident-content {
+  width: 100%;
+  padding: 36px 40px 72px;
+}
+
+.resident-page-header {
+  margin-bottom: 28px;
+}
+
+.resident-page-header h1 {
+  font-size: 1.75rem;
+  margin-bottom: 4px;
+}
+
+.resident-page-header p {
+  color: var(--muted);
+  margin: 0;
+  font-size: .88rem;
+}
+
+/* ── Responsive breakpoints ── */
+@media (max-width: 900px) {
+  .resident-shell {
+    flex-direction: column;
+  }
+
+  .resident-content {
+    padding: 24px 20px 48px;
+  }
+}
+
+@media (max-width: 600px) {
+  .resident-content {
+    padding: 16px 14px 40px;
+  }
+
+  .resident-page-header h1 {
+    font-size: 1.4rem;
+  }
+}

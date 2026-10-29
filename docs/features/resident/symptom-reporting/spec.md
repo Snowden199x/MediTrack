@@ -1,15 +1,20 @@
 # Resident Symptom Reporting
 
-**Status:** Partial — the React flow asks category-specific questions and saves reports through the Laravel API. Questions and next-step wording are draft content and require health-staff approval before use with real patients. Migrations and runtime behavior have not been verified by the owner.
+**Status:** Partial — the resident page is now a chat-style flow that asks one question at a time, and it saves reports through the Laravel API. Questions, urgent wording, and next-step text are draft content and require health-staff approval before use with real patients. Migrations and runtime behavior have not been verified by the owner.
 
 ## Implemented in code
 
-- Residents choose a concern category, answer fixed follow-up questions, and may add onset date, self-described severity, and details. The API validates question keys and allowed choices, stores the questionnaire version, and returns a generic contact-the-health-team message.
+- Residents answer a guided chat: main concern, when it started (preset choices or a date), how it feels, concern-specific follow-ups, and an optional notes step. Every question can be answered with tappable chips; typing is only needed for the optional notes box.
+- The chat shows a typing pause, a step counter and progress bar, a back button, and a highlighted urgent notice when the resident picks Difficulty breathing or Severe.
+- The “Other” concern narrows down through a branch question that matches the first answer (pain, tiredness, dizziness, sleep or appetite change, something else), then asks how much it affects the day and whether it is getting better or worse.
+- Before sending, the resident sees a summary of every question and answer and can edit any row. After sending, the page shows short guidance for the chosen concern (and the “Other” answer), a “Get help right away if…” line, and a reminder that it is general guidance, not a diagnosis. When the report is urgent, the urgent message is shown and the general tips are replaced with short safety steps.
+- The API still validates question keys and allowed choices, stores the questionnaire version, and returns a generic contact-the-health-team message. Questions are shared between the resident chat and the admin symptom report view in `frontend/src/shared/symptomQuestions.ts` and must stay in step with `backend/config/meditrack.php`.
 - Residents can see their own report status; authorized BHW/health-center staff can review a report and save a note. The app does not infer a disease or prescribe treatment.
 
 ## Remaining work
 
-- Have qualified health staff approve the questions, language, next-step text, and urgent escalation process. Add a pre-submit review/correction screen and resident notice/consent workflow. Do not treat the current generic next step as medical triage.
+- Have qualified health staff approve the questions, language, urgent wording, self-care and when-to-get-help guidance, next-step text, and escalation process. Add the resident notice/consent workflow. Do not treat the current guidance as medical triage.
+- The admin “Symptom reports” page (see `docs/features/health-center/symptom-reports/spec.md`) uses sample reports until an admin API is connected.
 
 ## Goal and boundary
 

@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { api, getToken, setToken } from '../shared/api'
 import SuperuserWorkspace from './SuperuserWorkspace'
+import './css/login.css'
 
 const loginSchema = z.object({
   email: z.email(),
@@ -28,24 +29,10 @@ function AdminApp() {
   })
 
   useEffect(() => {
-    if (!hasToken) {
-      setUser(null)
-      return
-    }
-
-    if (sessionError) {
-      setToken(null)
-      setUser(null)
-      return
-    }
-
+    if (!hasToken) { setUser(null); return }
+    if (sessionError) { setToken(null); setUser(null); return }
     if (authenticatedUser) {
-      if (authenticatedUser.role !== 'superuser') {
-        setToken(null)
-        setUser(null)
-        return
-      }
-
+      if (authenticatedUser.role !== 'superuser') { setToken(null); setUser(null); return }
       setUser(authenticatedUser)
     }
   }, [authenticatedUser, hasToken, sessionError])
@@ -62,24 +49,56 @@ function AdminApp() {
   }
 
   async function logout() {
-    try { await api('/logout', { method: 'POST' }) } catch { /* Clear the local token even if the API is unavailable. */ }
+    try { await api('/logout', { method: 'POST' }) } catch { /* ignore */ }
     queryClient.removeQueries({ queryKey: ['auth', 'me'] })
     setToken(null)
     setUser(null)
   }
 
-  return <>
-    <header className="site-header"><div className="site-header-inner"><span className="brand"><span className="brand-mark" aria-hidden="true" />MediTrack Admin</span>{user && <nav aria-label="Admin navigation"><span className="signed-in">{user.name} · Superuser</span><button className="text-button" onClick={logout}>Log out</button></nav>}</div></header>
-    {loading ? <main className="page-container workspace"><p className="loading" role="status">Loading…</p></main> : user ? <SuperuserWorkspace user={user} /> : <main className="auth-wrap page-container"><div className="auth-panel"><h1>Superuser log in</h1><p>Registration review portal.</p><form className="form-stack" onSubmit={handleSubmit(submit)}>
-      <label>Email<input type="email" autoComplete="username" {...register('email')} /></label>
-      {errors.email && <p className="notice error" role="alert">{errors.email.message}</p>}
-      <label>Password<input type="password" autoComplete="current-password" {...register('password')} /></label>
-      {errors.password && <p className="notice error" role="alert">{errors.password.message}</p>}
-      {errors.root?.server && <p className="notice error" role="alert">{errors.root.server.message}</p>}
-      <button className="button" disabled={isSubmitting}>{isSubmitting ? 'Please wait…' : 'Log in'}</button>
-    </form></div></main>}
-    <footer className="site-footer"><div className="page-container">MediTrack · Private admin portal</div></footer>
-  </>
+  if (loading) {
+    return <div className="admin-loading"><p className="loading" role="status">Loading…</p></div>
+  }
+
+  if (user) {
+    return <SuperuserWorkspace user={user} onLogout={logout} />
+  }
+
+  return (
+    <main className="admin-auth">
+      <aside className="admin-auth-aside" aria-label="About the MediTrack admin portal">
+        <div className="admin-auth-brand">
+          <span className="admin-auth-mark" aria-hidden="true" />MediTrack <small>Admin</small>
+        </div>
+        <div className="admin-auth-copy">
+          <span className="admin-auth-eyebrow">Private admin portal</span>
+          <h1>Keep the barangay health team moving.</h1>
+          <p>Review resident registrations, triage reports, and keep follow-ups on schedule.</p>
+        </div>
+        <ul className="admin-auth-points">
+          <li>Registration review queue</li>
+          <li>Reports and follow-ups</li>
+          <li>Resident accounts and access</li>
+        </ul>
+        <p className="admin-auth-foot">Authorised personnel only</p>
+      </aside>
+      <section className="admin-auth-panel">
+        <div className="admin-auth-card">
+          <span className="admin-auth-eyebrow">Superuser access</span>
+          <h2>Log in to continue</h2>
+          <p className="admin-auth-lede">Use your MediTrack superuser credentials to open the admin portal.</p>
+          <form className="form-stack admin-auth-form" onSubmit={handleSubmit(submit)}>
+            <label>Email<input type="email" autoComplete="username" {...register('email')} /></label>
+            {errors.email && <p className="notice error" role="alert">{errors.email.message}</p>}
+            <label>Password<input type="password" autoComplete="current-password" {...register('password')} /></label>
+            {errors.password && <p className="notice error" role="alert">{errors.password.message}</p>}
+            {errors.root?.server && <p className="notice error" role="alert">{errors.root.server.message}</p>}
+            <button className="button admin-auth-submit" disabled={isSubmitting}>{isSubmitting ? 'Please wait…' : 'Log in'}</button>
+          </form>
+          <p className="admin-auth-note">Access is limited to approved superusers.</p>
+        </div>
+      </section>
+    </main>
+  )
 }
 
 export default AdminApp
