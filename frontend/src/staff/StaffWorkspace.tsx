@@ -3,6 +3,7 @@ import { api } from '../shared/api'
 import PsgcAddressFields from '../shared/PsgcAddressFields'
 import Badge from '../shared/Badge'
 import { CONCERNS } from '../shared/symptomQuestions'
+import SymptomReportsPage from './SymptomReportsPage'
 import './css/staff.css'
 
 const date = value => value ? new Date(value).toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' }) : '—'
@@ -140,7 +141,7 @@ export default function StaffWorkspace({ user }) {
     {tab === 'residents' && <div className="detail-stack"><div className="toolbar"><form onSubmit={event => { event.preventDefault(); load('residents') }}><label className="visually-hidden" htmlFor="resident-search">Search residents</label><input id="resident-search" type="search" placeholder="Search residents" value={search} onChange={event => setSearch(event.target.value)} /><button className="button secondary small">Search</button></form><button className="button small" onClick={() => setShowHouseholdForm(!showHouseholdForm)}>{showHouseholdForm ? 'Close form' : 'Add household'}</button></div>{showHouseholdForm && <HouseholdForm user={user} save={save} />}<div className="content-grid resident-layout"><section className="panel"><h2>Residents</h2>{list(data.residents).length ? <ul className="plain-list selectable-list">{list(data.residents).map(resident => <li key={resident.id}><button onClick={async () => { try { setSelectedResident(await api(`/staff/residents/${resident.id}`)); setError('') } catch (failure) { setError(failure.message) } }}><strong>{resident.name}</strong><span>{resident.household.barangay_name}</span></button></li>)}</ul> : <p className="empty">No residents found.</p>}</section><div>{selectedResident ? <ResidentDetail key={selectedResident.id} resident={selectedResident} save={save} /> : <section className="panel"><h2>Resident record</h2><p className="empty">Choose a resident to view schedules, visits, and follow-ups.</p></section>}</div></div></div>}
     {tab === 'followups' && <FollowUps items={list(data.followups)} save={save} />}
     {tab === 'requests' && <ReviewList items={list(data.requests)} kind="requests" save={save} />}
-    {tab === 'reports' && <ReviewList items={list(data.reports)} kind="reports" save={save} />}
+    {tab === 'reports' && <SymptomReportsPage apiReports={list(data.reports)} reviewRule={data.reports?.review_rule} onReview={(id, note) => save(`/staff/symptom-reports/${id}`, 'PATCH', { review_note: note }, 'Symptom report reviewed.')} onNotice={(message, type) => { setNotice(message); if (type === 'error') setError(message) }} />}
     {tab === 'announcements' && <Announcements items={list(data.announcements)} canCreate={isCenter} save={save} />}
     {tab === 'signals' && isCenter && <AreaSignals data={data} save={save} />}
     {tab === 'accounts' && isCenter && <Accounts items={list(data.accounts)} save={save} />}

@@ -1,17 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
-import { CONCERNS } from '../../shared/symptomQuestions'
-import SymptomReportDrawer from '../components/SymptomReportDrawer'
-import '../css/accounts.css'
-import '../css/dashboard.css'
-import '../css/symptom-reports.css'
+import { CONCERNS } from '../shared/symptomQuestions'
+import SymptomReportDrawer from './SymptomReportDrawer'
+import '../admin/css/accounts.css'
+import '../admin/css/dashboard.css'
+import './css/symptom-reports.css'
 import {
-  AREAS,
   CONCERN_LABELS,
-  MOCK_CHECKUPS,
-  MOCK_REPORTS,
   REPORT_STATUSES,
   SEVERITIES,
-  SIMILAR_REPORT_RULE,
   findSimilarReportClusters,
   isUrgentReport,
   severityTone,
@@ -19,12 +15,22 @@ import {
   type ReportStatus,
   type Severity,
   type SymptomReport,
-} from '../symptomReportsConfig'
+} from './symptomReportsConfig'
 
-interface Props {
-  onNotice: (message: string, type?: 'success' | 'error') => void
-  /** Keeps the sidebar badge in step when a report changes status. */
-  onNewReportCount: (count: number) => void
+interface ApiReport {
+  id: number; resident_id: number; category: string; onset_date: string | null; severity: string | null
+  answers: Record<string, string>; details: string | null; status: string; review_note: string | null
+  created_at: string; resident?: { id: number; name: string; household?: { barangay_name: string; address: string | null } }
+}
+interface Props { apiReports: ApiReport[]; reviewRule?: { minimum_reports: number; within_days: number }; onReview: (id: number, note: string) => Promise<boolean>; onNotice: (message: string, type?: 'success' | 'error') => void }
+function fromApi(report: ApiReport): SymptomReport {
+  return {
+    id: report.id, residentId: report.resident_id, residentName: report.resident?.name ?? 'Resident',
+    area: report.resident?.household?.barangay_name ?? '', contact: '', mainConcern: report.category as SymptomReport['mainConcern'],
+    startDate: report.onset_date ?? '', severity: ({ mild: 'Mild', moderate: 'Moderate', severe: 'Severe', unsure: 'Not sure' }[report.severity ?? 'unsure'] ?? 'Not sure') as Severity,
+    followUpAnswers: report.answers ?? {}, notes: report.details ?? '', createdAt: report.created_at,
+    status: report.status === 'reviewed' ? 'Reviewed' : 'New', reviewNote: report.review_note,
+  }
 }
 
 function EyeIcon() {
@@ -86,9 +92,10 @@ function sortReports(a: SymptomReport, b: SymptomReport): number {
   return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
 }
 
-export default function SymptomReportsPage({ onNotice, onNewReportCount }: Props) {
+export default function SymptomReportsPage({ apiReports, reviewRule, onReview, onNotice }: Props) {
   const [reports, setReports] = useState<SymptomReport[]>([])
   const [loading, setLoading] = useState(true)
+  const [reviewNote, setReviewNote] = useState('')
   const [selectedId, setSelectedId] = useState<number | null>(null)
 
   const [query, setQuery] = useState('')
@@ -98,30 +105,18 @@ export default function SymptomReportsPage({ onNotice, onNewReportCount }: Props
   const [statusFilter, setStatusFilter] = useState<'all' | ReportStatus>('all')
   const [alertFilter, setAlertFilter] = useState<AreaCluster | null>(null)
 
-  // Sample data today; replace this effect with the real admin API call later.
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setReports(MOCK_REPORTS)
-      setLoading(false)
-    }, 350)
-    return () => window.clearTimeout(timer)
-  }, [])
+    setReports(apiReports.map(fromApi))
+    setLoading(false)
+  }, [apiReports])
 
-  const clusters = useMemo(() => findSimilarReportClusters(reports), [reports])
+  const clusters = useMemo(() => reviewRule ? findSimilarReportClusters(reports, reviewRule.minimum_reports, reviewRule.within_days) : [], [reports, reviewRule])
 
   const newCount = reports.filter(report => report.status === 'New').length
-
-  // Tell the admin shell how many reports still need a first look.
-  useEffect(() => {
-    if (!loading) onNewReportCount(newCount)
-  }, [newCount, loading, onNewReportCount])
+  const reviewedCount = reports.filter(report => report.status === 'Reviewed').length
+  const areaOptions = [...new Set(reports.map(report => report.area).filter(Boolean))]
 
   const urgentCount = reports.filter(report => isUrgentReport(report) && report.status !== 'Resolved').length
-  const scheduledCount = reports.filter(report => report.status === 'Scheduled').length
-  const resolvedThisWeek = reports.filter(report => {
-    if (report.status !== 'Resolved' || !report.resolvedAt) return false
-    return Date.now() - new Date(report.resolvedAt).getTime() <= 7 * 86_400_000
-  }).length
 
   const normalizedQuery = query.trim().toLowerCase()
 
@@ -149,9 +144,7 @@ export default function SymptomReportsPage({ onNotice, onNewReportCount }: Props
   const selectedHistory = selected
     ? reports.filter(report => report.residentId === selected.residentId && report.id !== selected.id)
     : []
-  const selectedCheckups = selected
-    ? MOCK_CHECKUPS.filter(checkup => checkup.residentId === selected.residentId)
-    : []
+  const selectedCheckups: import('./symptomReportsConfig').CheckupHistoryEntry[] = []
 
   function clearFilters() {
     setQuery('')
@@ -162,11 +155,14 @@ export default function SymptomReportsPage({ onNotice, onNewReportCount }: Props
     setAlertFilter(null)
   }
 
-  function updateReport(id: number, patch: Partial<SymptomReport>, message: string) {
-    setReports(previous => previous.map(report => (
-      report.id === id ? { ...report, ...patch } : report
-    )))
-    onNotice(message)
+  async function updateReport(id: number, patch: Partial<SymptomReport>, message: string) {
+    if (patch.status === 'Reviewed') {
+      if (!reviewNote.trim()) { onNotice('Add a review note before marking this report reviewed.', 'error'); return }
+      if (!await onReview(id, reviewNote.trim())) return
+      setReports(previous => previous.map(report => report.id === id ? { ...report, status: 'Reviewed', reviewNote: reviewNote.trim() } : report))
+      setReviewNote('')
+      onNotice(message)
+    }
   }
 
   const statCards = [
@@ -187,17 +183,17 @@ export default function SymptomReportsPage({ onNotice, onNewReportCount }: Props
       hot: urgentCount > 0,
     },
     {
-      label: 'Scheduled checkups',
-      value: scheduledCount,
-      hint: 'Residents with a date',
+      label: 'Reviewed reports',
+      value: reviewedCount,
+      hint: 'Review completed',
       tone: 'brand',
       icon: <CalendarIcon />,
       hot: false,
     },
     {
-      label: 'Resolved this week',
-      value: resolvedThisWeek,
-      hint: 'Last 7 days',
+      label: 'Reports shown',
+      value: reports.length,
+      hint: 'Current results',
       tone: 'deep',
       icon: <CheckIcon />,
       hot: false,
@@ -225,7 +221,7 @@ export default function SymptomReportsPage({ onNotice, onNewReportCount }: Props
         ))}
       </div>
 
-      {/* Area alert — uses SIMILAR_REPORT_RULE from symptomReportsConfig */}
+      {/* Area alerts use the threshold returned by Laravel. */}
       {clusters.length > 0 && (
         <div className="sr-alerts">
           {clusters.slice(0, 2).map(cluster => {
@@ -294,7 +290,7 @@ export default function SymptomReportsPage({ onNotice, onNewReportCount }: Props
           <span>Area</span>
           <select value={areaFilter} onChange={event => setAreaFilter(event.target.value)}>
             <option value="all">All areas</option>
-            {AREAS.map(area => (
+            {areaOptions.map(area => (
               <option key={area} value={area}>{area}</option>
             ))}
           </select>
@@ -403,10 +399,10 @@ export default function SymptomReportsPage({ onNotice, onNewReportCount }: Props
         )}
       </section>
 
-      <p className="sr-rule-note">
-        Area alerts use one editable rule: {SIMILAR_REPORT_RULE.minimumReports} or more reports of the
-        same concern, in the same area, within {SIMILAR_REPORT_RULE.withinDays} days.
-      </p>
+      {reviewRule && <p className="sr-rule-note">
+        Area alerts use the server rule: {reviewRule.minimum_reports} or more reports of the
+        same concern, in the same barangay, within {reviewRule.within_days} days.
+      </p>}
 
       {selected && (
         <SymptomReportDrawer
@@ -416,6 +412,8 @@ export default function SymptomReportsPage({ onNotice, onNewReportCount }: Props
           onClose={() => setSelectedId(null)}
           onUpdate={updateReport}
           onNotice={onNotice}
+          reviewNote={reviewNote}
+          onReviewNoteChange={setReviewNote}
         />
       )}
     </div>

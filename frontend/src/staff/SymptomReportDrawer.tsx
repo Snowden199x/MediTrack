@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { pushResidentNotification } from '../shared/residentNotifications'
 import {
   ADVICE_TEMPLATES,
   CONCERN_LABELS,
@@ -7,9 +8,8 @@ import {
   severityTone,
   type CheckupHistoryEntry,
   type SymptomReport,
-} from '../symptomReportsConfig'
-import { pushResidentNotification } from '../../shared/residentNotifications'
-import '../css/accounts.css'
+} from './symptomReportsConfig'
+import '../admin/css/accounts.css'
 
 interface Props {
   report: SymptomReport
@@ -18,6 +18,8 @@ interface Props {
   onClose: () => void
   onUpdate: (id: number, patch: Partial<SymptomReport>, message: string) => void
   onNotice: (message: string, type?: 'success' | 'error') => void
+  reviewNote: string
+  onReviewNoteChange: (value: string) => void
 }
 
 type Panel = 'none' | 'schedule' | 'advice'
@@ -61,6 +63,8 @@ export default function SymptomReportDrawer({
   onClose,
   onUpdate,
   onNotice,
+  reviewNote,
+  onReviewNoteChange,
 }: Props) {
   const [panel, setPanel] = useState<Panel>('none')
   const [date, setDate] = useState('')
@@ -303,30 +307,10 @@ export default function SymptomReportDrawer({
 
           {panel === 'none' && (
             <div className="sr-drawer-actions">
-              <button
-                className="button small"
-                disabled={report.status === 'Resolved'}
-                onClick={() => setPanel('schedule')}
-              >
-                Schedule checkup
-              </button>
-              <button className="button secondary small" onClick={() => setPanel('advice')}>
-                Send advice
-              </button>
-              <button
-                className="button secondary small"
-                disabled={report.status !== 'New'}
-                onClick={() => onUpdate(report.id, { status: 'Reviewed' }, `${report.residentName}'s report was marked reviewed.`)}
-              >
-                Mark as reviewed
-              </button>
-              <button
-                className="button secondary small"
-                disabled={report.status === 'Resolved'}
-                onClick={() => onUpdate(report.id, { status: 'Resolved', resolvedAt: new Date().toISOString() }, `${report.residentName}'s report was marked resolved.`)}
-              >
-                Mark as resolved
-              </button>
+              {report.status === 'New' && <>
+                <label className="sr-review-note">Review note<textarea rows={3} maxLength={3000} value={reviewNote} onChange={event => onReviewNoteChange(event.target.value)} /></label>
+                <button className="button secondary small" disabled={!reviewNote.trim()} onClick={() => onUpdate(report.id, { status: 'Reviewed' }, `${report.residentName}'s report was marked reviewed.`)}>Mark as reviewed</button>
+              </>}
             </div>
           )}
         </footer>

@@ -1,1 +1,1 @@
-export type AdminSection = 'overview' | 'reports' | 'symptoms' | 'schedule' | 'posts' | 'accounts' | 'bhw' | 'map'
+export type AdminSection = 'overview' | 'reports' | 'schedule' | 'posts' | 'accounts' | 'bhw' | 'map'
