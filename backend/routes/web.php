@@ -3,5 +3,5 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome'); // CI/CD pull request test
+        return 'Welcome to MediTrack - Version 2.0!';
 });
