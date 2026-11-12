@@ -7,6 +7,10 @@ return [
         'password' => env('MEDITRACK_SUPERUSER_PASSWORD'),
     ],
     'questionnaire_version' => '1',
+    'symptom_report_alert' => [
+        'minimum_reports' => 3,
+        'within_days' => 3,
+    ],
     'area_alerts_enabled' => env('MEDITRACK_AREA_ALERTS_ENABLED', false),
     'minimum_display_count' => 5,
     'next_step' => 'Please contact your barangay health worker or health center to discuss your report. If you need immediate help, seek local emergency assistance.',

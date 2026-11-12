@@ -6,7 +6,6 @@ type Section = AdminSection
 const sectionLabels: Record<Section, string> = {
   overview: 'Dashboard',
   reports: 'Reports',
-  symptoms: 'Symptom reports',
   schedule: 'Schedule',
   posts: 'Posts',
   accounts: 'Resident accounts',

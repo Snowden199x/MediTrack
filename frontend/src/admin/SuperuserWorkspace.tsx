@@ -6,14 +6,12 @@ import AnnouncementModal from './components/AnnouncementModal'
 import { ToastContainer, useToast } from './components/Toast'
 import DashboardPage from './pages/DashboardPage'
 import ReportsPage from './pages/ReportsPage'
-import SymptomReportsPage from './pages/SymptomReportsPage'
 import SchedulePage from './pages/SchedulePage'
 import PostsPage from './pages/PostsPage'
 import ResidentAccountsPage from './pages/ResidentAccountsPage'
 import CheckupLogsPage from './pages/CheckupLogsPage'
 import ResidentMapPage from './pages/ResidentMapPage'
 import './css/layout.css'
-import { MOCK_REPORTS } from './symptomReportsConfig'
 import type { AdminSection } from './components/adminTypes'
 
 type Section = AdminSection
@@ -27,10 +25,6 @@ export default function SuperuserWorkspace({ user, onLogout }) {
   const [reasons, setReasons] = useState<Record<number, string>>({})
   const [busyId, setBusyId] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
-  // Sidebar badge starts from the sample reports and is kept up to date by the page.
-  const [newSymptomReports, setNewSymptomReports] = useState(
-    () => MOCK_REPORTS.filter(report => report.status === 'New').length,
-  )
   const { toasts, addToast, dismissToast } = useToast()
 
   async function loadRegistrations() {
@@ -91,7 +85,6 @@ export default function SuperuserWorkspace({ user, onLogout }) {
           user={user}
           section={section}
           pendingCount={registrations.length}
-          newReportCount={newSymptomReports}
           collapsed={sidebarCollapsed}
           onSection={setSection}
           onLogout={onLogout}
@@ -116,9 +109,6 @@ export default function SuperuserWorkspace({ user, onLogout }) {
             />
           )}
           {section === 'reports' && <ReportsPage />}
-          {section === 'symptoms' && (
-            <SymptomReportsPage onNotice={addToast} onNewReportCount={setNewSymptomReports} />
-          )}
           {section === 'schedule' && <SchedulePage />}
           {section === 'posts' && (
             <PostsPage onNewAnnouncement={() => setShowAnnouncementModal(true)} />

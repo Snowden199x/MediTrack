@@ -327,6 +327,12 @@
   line-height: 1.5;
 }
 
+.sr-review-note { display: grid; gap: 6px; flex-basis: 100%; }
+.sr-review-note textarea { max-width: 640px; padding: 10px; border: 1px solid #cbd9d5; border-radius: 6px; font: inherit; }
+
+.sr-review-note { display: grid; gap: 6px; flex-basis: 100%; }
+.sr-review-note textarea { max-width: 640px; padding: 10px; border: 1px solid #cbd9d5; border-radius: 6px; font: inherit; }
+
 /* ── Side panel ── */
 .sr-drawer { width: min(100%, 540px); }
 

@@ -76,11 +76,14 @@ class SymptomReportController extends Controller
                     $query->where('barangay_code', $request->user()->barangay_code);
                 }
             })
-            ->with('resident:id,household_id,name')
+            ->with('resident:id,household_id,name', 'resident.household:id,barangay_code,barangay_name,address')
             ->orderByRaw("CASE WHEN status = 'pending' THEN 0 ELSE 1 END")
             ->latest('id')->paginate(20);
 
-        return response()->json($reports);
+        return response()->json([
+            'reports' => $reports,
+            'review_rule' => config('meditrack.symptom_report_alert'),
+        ]);
     }
 
     public function review(Request $request, SymptomReport $symptomReport, ActivityRecorder $activityRecorder): JsonResponse
